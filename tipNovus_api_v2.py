@@ -53,13 +53,13 @@ def inSecs(mins):
 def dply_tasks(response_str):
     global hexdec_string
     sub_response_str = response_str.split(',')[2]
-    
+
     try:
         sub_response_str = sub_response_str.strip().replace('\x0b','')
-       
+
         logging.debug(f"length of 'sub_response_string': {len(sub_response_str)}")
         hexdec_string = sub_response_str #write to sqlite3 for tpRead script
-        if len(sub_response_str) == 3 or len(sub_response_str) == 4:                
+        if len(sub_response_str) == 3 or len(sub_response_str) == 4:
 
             cd1 = status_codes[sub_response_str[:2]]
             cd2 = status_codes_2[sub_response_str[2:]]
@@ -69,7 +69,7 @@ def dply_tasks(response_str):
             logging.info(f"the compartment sent the status code: {hexdec_string}")
             logging.info(f"status code interpreted as: code1: {cd1}, code2: {cd2}")
 
-        elif len(sub_response_str) > 0 and len(sub_response_str) < 3:            
+        elif len(sub_response_str) > 0 and len(sub_response_str) < 3:
             time_remaining = int(sub_response_str.strip())
             if time_remaining == 0:
                 sys.stdout.write("the compartment is not in operation\n")
@@ -107,7 +107,7 @@ def check_set_str(current_str_cmd):
         time_to_set = int(current_str_cmd.split(',')[1])
         if time_to_set > 1 and time_to_set < 100:
             bool_var = True
-        
+
     if "set_dtemp" in current_str_cmd:
         temp_to_set = int(current_str_cmd.split(',')[1])
         if temp_to_set >= 20 and temp_to_set <= 70:
@@ -159,13 +159,13 @@ def connect():
         if not n:
             break
         else:
-            response = response + ser.read(n)    
+            response = response + ser.read(n)
     str_response = dcode(response)
     if str_response == dcode(cmd_dictionary['connect']):
         run = True
     sys.stdout.write(str_response+"\n")
     logging.info(f"response: '{str_response}'")
-    tpInsertResponse.insert_str_resp(current_datetime, "01,@,#", str_response) 
+    tpInsertResponse.insert_str_resp(current_datetime, "01,@,#", str_response)
 
 
 def run_task(task, timed_cmd=False, set_var=None):
@@ -174,43 +174,43 @@ def run_task(task, timed_cmd=False, set_var=None):
 
     run = False
     bool_check_cmd = False
-    
+
     if timed_cmd:
         ser.write(time_cmd_dictionary[task]['cmd'])
         logging.info(f"sent: '{time_cmd_dictionary[task]['cmd'].decode('utf-8')}'")
         global_timed_cmd = True
-    
-    elif set_var:            
+
+    elif set_var:
         if task == "set_dtime":
             set_cmd = "TM" #time
             bool_check_cmd = True
         elif task == "set_dtemp":
             set_cmd = "MT" #max temp
             bool_check_cmd = True
-                        
-        set_cmd = f"{tipnovus_id},{integration},{dryer},{set_cmd},"        
+
+        set_cmd = f"{tipnovus_id},{integration},{dryer},{set_cmd},"
         set_cmd = set_cmd + Template('$var#').substitute(var=set_var)
-        
+
         ser.write(set_cmd.encode()) #set var for temp or time on dryer
         sys.stdout.write(f"sent: '{set_cmd}'\n")
-        logging.info(f"sent: '{set_cmd}'")            
+        logging.info(f"sent: '{set_cmd}'")
     else:
         ser.write(cmd_dictionary[task])
         sys.stdout.write(f"sent: '{cmd_dictionary[task].decode('utf-8')}'\n")
         logging.info(f"sent: '{cmd_dictionary[task].decode('utf-8')}'")
 
     ser.reset_output_buffer
-    ser.reset_input_buffer  
-    time.sleep(sleep_time)                
+    ser.reset_input_buffer
+    time.sleep(sleep_time)
     response = ser.read(1)
-    
+
     while True:
         n = ser.in_waiting
         if not n:
             break
         else:
             time.sleep(0.1)
-            response = response + ser.read(n)        
+            response = response + ser.read(n)
 
     str_response = dcode(response).strip()
 
@@ -219,21 +219,21 @@ def run_task(task, timed_cmd=False, set_var=None):
             run = True
     except:
          pass
-        
-    if bool_check_cmd:                
-       
-                        
+
+    if bool_check_cmd:
+
+
         if str_response == set_cmd:
             #print('it is true')
             run = True
-            
+
     if global_timed_cmd:
         try:
             if str_response == dcode(time_cmd_dictionary[task]['cmd']):
                 run = True
         except:
             pass
-    
+
     if timed_cmd:
         tpInsertResponse.insert_str_resp(current_datetime, time_cmd_dictionary[task]['cmd'].decode('utf-8'), str_response)
     else:
@@ -241,21 +241,21 @@ def run_task(task, timed_cmd=False, set_var=None):
             tpInsertResponse.insert_str_resp(current_datetime, set_cmd, str_response)
         else:
             tpInsertResponse.insert_str_resp(current_datetime, cmd_dictionary[task].decode('utf-8'), str_response)
-        
+
     sys.stdout.write("response: " + str_response+"\n")
-    #sys.stdout.write(f'bool_check_cmd variable from run_task function: {bool_check_cmd}\n')    
+    #sys.stdout.write(f'bool_check_cmd variable from run_task function: {bool_check_cmd}\n')
     #sys.stdout.write(f'run variable from run_task function: {run}\n')
     logging.debug(f'bool_check_cmd var from run_task function: {bool_check_cmd}')
-    logging.debug(f'run var from run_task function: {run}')    
+    logging.debug(f'run var from run_task function: {run}')
     logging.info(f"response: '{str_response}'")
-        
-def unack():    
+
+def unack():
     ser.reset_input_buffer
     ser.reset_output_buffer
     ser.write(cmd_dictionary['incorrect'])
     sys.stdout.write(f"nulling cmd: '{cmd_dictionary['incorrect'].decode('utf-8')}'\n")
     logging.info(f"nulling cmd: '{cmd_dictionary['incorrect'].decode('utf-8')}'")
-    
+
 
 def acknowledge(task=None,wait_time=1):
     global run
@@ -269,9 +269,9 @@ def acknowledge(task=None,wait_time=1):
     ser.reset_output_buffer
     ser.reset_input_buffer
     ser.write(cmd_dictionary['ack'])
-    
+
     logging.info(f"sent: '{cmd_dictionary['ack'].decode('utf-8')}'")
-    
+
     if global_timed_cmd:
         wait_time = int(wait_time)
         sys.stdout.write(f"waiting for cmd: {current_str_cmd}\n")
@@ -284,7 +284,7 @@ def acknowledge(task=None,wait_time=1):
                 logging.debug(f'~{wait_time - i} secs left')
     else:
         time.sleep(sleep_time)
-        
+
     response = ser.read(1)
     while True:
         n = ser.in_waiting
@@ -293,15 +293,15 @@ def acknowledge(task=None,wait_time=1):
         else:
             time.sleep(0.1)
             response = response + ser.read(n)
-            
+
     str_response = dcode(response)
-    
+
     try:
         sub_response = str_response.split(',')[2]
     except IndexError as e:
         sub_response = "0"
-    
-    try:        
+
+    try:
         if sub_response == '1' or sub_response == '@':
             run = True
     except:
@@ -314,23 +314,23 @@ def acknowledge(task=None,wait_time=1):
         run = False
 
     try:
-        
+
         if 'dply' in task:
             #dply_tasks(sub_response) #print out time remaining or current status or status codes
             dply_tasks(str_response)
         if task == "check_sensor":
-            sensor_check(sub_response) #print out sensor numbers that are faulty        
+            sensor_check(sub_response) #print out sensor numbers that are faulty
     except:
         run = False
-    
-    sys.stdout.write(f"response after ack: {str_response}\n")      
+
+    sys.stdout.write(f"response after ack: {str_response}\n")
     logging.info(f"response after ack: '{str_response}'")
     sys.stdout.write("end of ack function\n")
     if hexdec_string:
         s1, s2, s3, s4 = str_response.split(',')
         str_response = f"{s1},{s2},{hexdec_string},{s4}"
     tpInsertResponse.insert_str_resp(current_datetime, "01,ACK,1,#", str_response)
-    
+
 
 if __name__ == "__main__":
     try:
@@ -343,11 +343,11 @@ if __name__ == "__main__":
                 fi.write("##################################################################################\n")
     except:
            pass     #Do nothing if there is no argument to write header
-        
+
     try:
         with serial.Serial(port='COM17',baudrate=115200,timeout=12) as ser:
-            if ser.isOpen():       
-                connect()                
+            if ser.isOpen():
+                connect()
                 if run:
                     sys.stdout.write('Connected!\n')
                     logging.info('Connected!')
@@ -355,24 +355,24 @@ if __name__ == "__main__":
                     sys.stdout.write('Could not connect\n')
                     logging.critical('Could not connect')
                     raise
-                        
+
                 #read first ts of cmd
-                
-                first_dt = read_cmd_ts()[0]                
-                    
+
+                first_dt = read_cmd_ts()[0]
+
                 while bool_issue_cmd:
                     sys.stdout.write('awaiting new command...\n')
                     logging.debug('awaiting new command...')
-                    
+
                     while True:
                         fetch_db_values = read_cmd_ts()
                         current_dt = fetch_db_values[0]
                         current_str_cmd = fetch_db_values[1]
                         time.sleep(0.4)
                         #logging.debug(f'ts of orig cmd: {first_dt} | ts of cur cmd: {current_dt}')
-                        
+
                         if first_dt < current_dt:
-                            logging.info(f'ts of orig cmd: {first_dt} | ts of cur cmd: {current_dt}')   
+                            logging.info(f'ts of orig cmd: {first_dt} | ts of cur cmd: {current_dt}')
                             first_dt = current_dt
                             break
                         else:
@@ -386,33 +386,33 @@ if __name__ == "__main__":
                     logging.info(f'current cmd value: {current_str_cmd}')
                     if current_str_cmd.lower() == 'q':
                         bool_issue_cmd = False
- 
+
                     if current_str_cmd not in cmd_dictionary.keys() and \
                        current_str_cmd not in time_cmd_dictionary.keys() and\
-                       current_str_cmd[:9] not in ['set_dtime', 'set_dtemp']:                        
+                       current_str_cmd[:9] not in ['set_dtime', 'set_dtemp']:
                         if current_str_cmd.lower() == 'q':
                             pass
                         else:
                             sys.stdout.write(f'{current_str_cmd.lower()} was not a valid command\n')
                             logging.error(f'{current_str_cmd.lower()} was not a valid command')
                             continue
-                    
+
                     if current_str_cmd in time_cmd_dictionary.keys():
-                        run_task(current_str_cmd, True)                    
-                    elif current_str_cmd in cmd_dictionary.keys():                         
-                        run_task(current_str_cmd)                        
+                        run_task(current_str_cmd, True)
+                    elif current_str_cmd in cmd_dictionary.keys():
+                        run_task(current_str_cmd)
                     elif ',' in current_str_cmd:
-                        if check_set_str(current_str_cmd):                    
+                        if check_set_str(current_str_cmd):
                             run_task(task = current_str_cmd.split(',')[0],\
-                                 set_var = current_str_cmd.split(',')[1])                        
+                                 set_var = current_str_cmd.split(',')[1])
                         else:
                             sys.stdout.write(f'{current_str_cmd.lower()} was not a valid command; set parameter is not within range\n')
                             logging.error(f'{current_str_cmd.lower()} was not a valid command; set parameter is not within range')
                             continue
-                        
+
                     if current_str_cmd.lower() != 'q':
                         if run:
-                            acknowledge(current_str_cmd.lower())                                                    
+                            acknowledge(current_str_cmd.lower())
                         else:
                             unack() #if the strings do not match (run = False)
 
@@ -421,16 +421,16 @@ if __name__ == "__main__":
                         logging.info('disconnecting')
                         global_timed_cmd = False
                         connect()
-                        acknowledge()                        
+                        acknowledge()
                         break
                     elif run:
                         sys.stdout.write(f"process ran through for '{current_str_cmd}'\n")
                         logging.debug(f"process ran through for '{current_str_cmd}'")
                     else:
                         sys.stdout.write(f"unsuccessful action '{current_str_cmd}'\n")
-                        logging.error(f"unsuccessful action '{current_str_cmd}'")                            
-                    
-                    global_timed_cmd = False    
+                        logging.error(f"unsuccessful action '{current_str_cmd}'")
+
+                    global_timed_cmd = False
                     bool_issue_cmd = True #reset vars back
                     run = False
             else:
