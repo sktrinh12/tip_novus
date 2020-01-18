@@ -33,18 +33,20 @@ def send_cmd(cmd):
     return [tp.command, str_response]
 
 def ack_cmd(cmd_=None):
-    cmd = tipnovus(cmd_)
+    if cmd_:
+        cmd = tipnovus(cmd_)
     ack = tipnovus('ack')
     tp_ser.write(ack.encode_str_cmd)
-    if cmd.buffer_wait_time > 6:
-        for i in range(cmd.buffer_wait_time):
-            print_output('*')
-            sleep(1)
-            if i % 8 == 0:
-                print_output(f'~{tp.buffer_wait_time - i} secs left')
-                logger.debug(f'time_remaining: {wait_time - i} secs')
-    else:
-        sleep(cmd.buffer_wait_time)
+    if cmd_:
+        if cmd.buffer_wait_time > 6:
+            for i in range(cmd.buffer_wait_time):
+                print_output('*')
+                sleep(1)
+                if i % 8 == 0:
+                    print_output(f'~{tp.buffer_wait_time - i} secs left')
+                    logger.debug(f'time_remaining: {wait_time - i} secs')
+        else:
+            sleep(cmd.buffer_wait_time)
     str_response = tp_ser.read
     spr = split_resp(str_response) #returns the sub-string response
     if not spr:
