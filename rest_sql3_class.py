@@ -1,4 +1,11 @@
 import sqlite3
+from flask import Flask, request
+import os
+
+app = Flask(__name__)
+
+
+db_filepath = os.path.join(app.instance_path.replace('instance',''), 'db', 'tp_rest.db')
 
 #{{{ TIP NOVUS DATABASE CLASS
 class tpdb:

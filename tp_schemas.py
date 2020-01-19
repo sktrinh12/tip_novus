@@ -1,6 +1,7 @@
 import re
 from marshmallow import Schema, fields, pprint, ValidationError, validates#, post_load
 from main_funcs import handle_logs
+from tipnovus_class_api import send_cmd_dict
 
 #{{{ TPSerSetCmdSchema class
 class tp_ser_check_setcmd_schema(Schema):

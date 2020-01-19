@@ -1,11 +1,8 @@
-from flask import Flask, request
 from flask_restful import Resource, Api, abort
 from main_funcs import *
 from tp_schemas import *
 
-app = Flask(__name__)
 api = Api(app)
-db_filepath = os.path.join(app.instance_path.replace('instance',''), 'db', 'tp_rest.db')
 tp_ser = None
 tpcmd_schema = tp_ser_cmd_schema()
 
@@ -13,7 +10,9 @@ tpcmd_schema = tp_ser_cmd_schema()
 class tp_wbsrv_upd(Resource):
     def put(self, cmd):
         current_ts = datetime.now().strftime('%G-%b-%d %H:%M:%S')
-        input_cmd_dict = {'cmd' : cmd, 'resp' : request.form['resp']}
+        input_cmd_dict = {'cmd' : cmd, \
+                          'resp' : request.form['resp'], \
+                          'code_cmd' : request.form['code_cmd']}
         schema_check = False
         if request.form.get('setcmd', False):
             tpsetcmd_schema = tp_ser_check_setcmd_schema()
@@ -36,9 +35,9 @@ class tp_wbsrv_upd(Resource):
                 output = f'func: {self.__class__.__name__}_{self.put.__name__}', f"error: {err.messages}"
                 handle_logs(output)
         if schema_check:
-            if len(input_cmd_dict.keys()) > 2:
+            if len(input_cmd_dict.keys()) > 3:
                 cmd = input_cmd_dict['setcmd']
-            change = update_data(current_ts, cmd, input_cmd_dict['resp'])
+            change = update_data(current_ts, cmd, input_cmd_dict['code_cmd'], input_cmd_dict['resp'])
             output = f'func: {self.__class__.__name__}_{self.put.__name__}', f'ts: {current_ts}',f'sent: {cmd}', f"resp: {input_cmd_dict['resp']}"
             handle_logs(output)
             return change, 201

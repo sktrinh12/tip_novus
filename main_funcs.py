@@ -107,12 +107,13 @@ def disconnect_tp():
 
 
 #{{{ FUNCTIONS RELATED TO API MECHANISM
-def update_data(current_ts, cmd, resp):
+def update_data(current_ts, cmd, code_cmd, resp):
     with tpdb(db_filepath) as db:
         db.execute("DELETE FROM CMDRESPONSE")
-        db.execute(f"INSERT INTO CMDRESPONSE VALUES ('{current_ts}', '{cmd}', '{resp}')")
-        handle_logs(f'ts: {current_ts}', f'sent: {cmd}', f'resp: {resp}')
-        return {'timestamp' : current_ts , 'cmd' : cmd, 'response' : resp}
+        db.execute(f"INSERT INTO CMDRESPONSE VALUES ('{current_ts}', '{cmd}', '{code_cmd}', '{resp}')")
+        output = f'ts: {current_ts}', f'cmd: {cmd}', f'code_cmd: {code_cmd}', f'resp: {resp}'
+        handle_logs(output)
+        return {'timestamp' : current_ts , 'cmd' : cmd, 'code_cmd' : code_cmd, 'response' : resp}
 
 
 def ref_fx_cmd_proc(cmd, fx):
@@ -141,7 +142,7 @@ def ref_fx_cmd_proc(cmd, fx):
     if schema_check:
         with tpdb(db_filepath) as db:
             db.execute("DELETE FROM CMDRESPONSE")
-            db.execute(f"INSERT INTO CMDRESPONSE VALUES ('{current_ts}', '{sent}', '{response}')")
+            db.execute(f"INSERT INTO CMDRESPONSE VALUES ('{current_ts}', '{sent}', '{code_cmd}', '{response}')")
         output = f'func: {ref_fx_cmd_proc.__name__}', f'sent: {cmd}', f'code_cmd: {sent}' ,f"resp: {response}"
         if 'interp' in input_cmd_dict.keys():
             output + (f'interpreatation: {input_cmd_dict["interp"]}',)
