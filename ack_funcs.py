@@ -1,7 +1,3 @@
-str_resp = ''
-code1 = ''
-code2 = ''
-
 status_codes = {
     '11' : 'SUB-PROTOCOL STARTED',
     '12' : 'SUB-PROTOCOL FINISHED',
@@ -65,28 +61,17 @@ def print_output(output):
     print(output)
     #yield f"data: {output}\n\n"
 
-def output_status(split_str_resp, Er_code):
-    global code1
-    global code2
+def error_msg_handle(split_str_resp):
     try:
-        if Er_code:
-            code_1 = status_codes[split_str_resp[:2]]
-            code_2 = status_codes_2[split_str_resp[2:]]
-            logging.error(f"""error during run: code_1: {code_1}, code_2: {code_2}""")
-        else:
-            code_1 = status_codes[split_str_resp[:2]]
-            code_2 = status_codes_2[split_str_resp[2:]]
-            logging.info(f"""code output: code_1: {code_1}, code_2: {code_2}""")
-
+        codemsg_1 = status_codes[split_str_resp[:2]]
+        codemsg_2 = status_codes_2[split_str_resp[2:]]
         code1 = split_str_resp[:2]
         code2 = split_str_resp[2:]
-
-        return (code_1,code_2)
+        print_output(('error', f"""error code: {code1}{code2} {codemsg_1} {codemsg_2}"""))
+        return code1, code2, codemsg_1, codemsg_2
     except Exception as e:
         logging.critical(f"no code string found > {str(e)}")
-        code1 = "-1"
-        code2 = "1"
-        return (None, None)
+        return None, None, None, None
 
 def dply_cmds(sub_response_str):
     try:
@@ -129,7 +114,7 @@ def sensor_check(sub_response_str):
         else:
             return bad_sensor
     except Exception as e:
-        print_output(f"""a problem occured parsing the sensor check repsonse string - {str(e)}\n""")
+        print_output(f"""a problem occured parsing the sensor check repsonse string - {str(e)}""")
 
 def split_resp(str_response):
     try:
@@ -137,13 +122,3 @@ def split_resp(str_response):
     except IndexError as e:
         sub_response = ""
     return sub_response
-
-# def check_sr_char(sub_response):
-#     if sub_response == '1' or sub_response == '@':
-#         return True
-#     return False
-
-# def check_ack_resp(str_response):
-#     if str_response == "01,ACK,#":
-#         return True
-#     return False

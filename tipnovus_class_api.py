@@ -95,10 +95,10 @@ class tipnovus:
 
 
 class tpserial:
-    def __init__(self):
+    def __init__(self, port):
         self._ser = None
         self._baudrate = 115200
-        self._port = "/dev/ttyUSB0"
+        self._port = port 
         self._timeout = 10
 
     @property
@@ -144,6 +144,7 @@ class tpserial:
             else:
                 sleep(0.1)
                 _response += self._ser.read(n_)
+        logger.debug(f'Read {_response.decode()} from serial device')
         return _response.decode()
 
     def __enter__(self):

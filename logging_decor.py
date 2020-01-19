@@ -1,13 +1,14 @@
 import logging
 from functools import wraps
 from datetime import datetime
+import os
 
 def create_logger():
     """
     Creates a logging object and returns it
     """
     current_date = str(datetime.now().strftime('%G-%m-%d'))
-    fpath = '/home/pi/data_output/logs/'
+    fpath = os.path.join(os.path.dirname(__file__), 'logs/')
     logger = logging.getLogger('cmd_logger')
     logger.setLevel(logging.INFO)
     # create the logging file handler
@@ -29,10 +30,7 @@ def logit(logger):
         @wraps(func)
         def wrapper_logit(args):
             if 'error' in args:
-                if not isinstance(args, tuple):
-                    logger.error(args)
-                else:
-                    logger.error(" | ".join([a for a in args if a != 'error']))
+                logger.error(" | ".join([a for a in args if a != 'error']))
             else:
                 if not isinstance(args, tuple):
                     logger.info(args)

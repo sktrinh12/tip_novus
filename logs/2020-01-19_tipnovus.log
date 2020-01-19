@@ -1,0 +1,2 @@
+19-Jan-2020 00:06:26, cmd_logger, INFO [logging_decor.py line:41],	func: tp_wbsrv_resp_get | resp: 01,TI,WA,SC,#
+19-Jan-2020 01:22:40, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_resp_get | resp: 01,TI,WA,SC,#
