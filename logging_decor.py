@@ -7,7 +7,7 @@ def create_logger():
     Creates a logging object and returns it
     """
     current_date = str(datetime.now().strftime('%G-%m-%d'))
-    fpath = '/Users/spencertrinh/GitRepos/tipnovAPI/logs/'
+    fpath = '/home/pi/data_output/logs/'
     logger = logging.getLogger('cmd_logger')
     logger.setLevel(logging.INFO)
     # create the logging file handler
@@ -27,13 +27,18 @@ logger = create_logger()
 def logit(logger):
     def decorator_logit(func):
         @wraps(func)
-        def wrapper_logit(*args):
-            args_ = [a for a in args]
-            if 'error' in args_:
-                logger.error(" | ".join([a for a in args if a != 'error']))
+        def wrapper_logit(args):
+            if 'error' in args:
+                if not isinstance(args, tuple):
+                    logger.error(args)
+                else:
+                    logger.error(" | ".join([a for a in args if a != 'error']))
             else:
-                logger.info(" | ".join(args_))
-            return func(*args)
-        return wrapper_logit 
+                if not isinstance(args, tuple):
+                    logger.info(args)
+                else:
+                    logger.info(" | ".join(args))
+            return func(args)
+        return wrapper_logit
     return decorator_logit
 

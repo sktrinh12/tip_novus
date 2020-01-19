@@ -1,5 +1,12 @@
 import sys
 import serial
+from logging_decor import *
+from time import sleep
+
+@logit(logger)
+def handle_logs(*args):
+    print(*args)
+
 #{{{ FORMAT COMMANDS 
 class FC:
     def __init__(self, tp_unit, part_of_cmd_1, part_of_cmd_2=''):
@@ -9,18 +16,18 @@ class FC:
 
     @property
     def run_cmds(self):
-        return f"#,0{self.tp_unit},TI,{self.part_of_cmd_1},{self.part_of_cmd_2},#"
+        return f"0{self.tp_unit},TI,{self.part_of_cmd_1},{self.part_of_cmd_2},#"
 
     @property
     def util_cmds(self):
         if self.part_of_cmd_2 == '':
-            return f"#,0{self.tp_unit},{self.part_of_cmd_1},#"
+            return f"0{self.tp_unit},{self.part_of_cmd_1},#"
         else:
-            return f"#,0{self.tp_unit},{self.part_of_cmd_1},#"
+            return f"0{self.tp_unit},{self.part_of_cmd_1},#"
 
     def setparam(self, setvar):
         self.setvar = setvar
-        return f"#,0{self.tp_unit},TI,{self.part_of_cmd_1},{self.part_of_cmd_2},{self.setvar}#"
+        return f"0{self.tp_unit},TI,{self.part_of_cmd_1},{self.part_of_cmd_2},{self.setvar}#"
 
     @staticmethod
     def to_secs(mins):
@@ -33,30 +40,31 @@ WA = 'WA'
 DR = 'DR'
 send_cmd_dict = {
     #key = command name, val1 = ascii command, val2 = time delay
-    'connect' : [FC(TP, '@').util_cmds, FC.to_secs(0.1)],
-    'ack' : [FC(TP, 'ACK,1').util_cmds, FC.to_secs(0.07)],
-    'nak' : [FC(TP, 'NAK,@').util_cmds, FC.to_secs(0.07)],
-    'opendoor_washer' : [FC(TP, WA, 'OD').run_cmds, FC.to_secs(0.2)],
-    'closedoor_washer' : [FC(TP, WA, 'CD').run_cmds, FC.to_secs(0.2)],
-    'opendoor_dryer' : [FC(TP, DR, 'OD').run_cmds, FC.to_secs(0.2)],
-    'closedoor_dryer' : [FC(TP, DR, 'CD').run_cmds, FC.to_secs(0.2)],
-    'start_dryer' : [FC(TP, DR, 'SD').run_cmds, FC.to_secs(0.4)],
-    'custom2_proc' : [FC(TP, WA, 'S2').run_cmds, FC.to_secs(0.4)],
-    'self_clean' : [FC(TP, WA, 'CL').run_cmds, FC.to_secs(0.4)],
-    'check_sensor' : [FC(TP, WA, 'SC').run_cmds, FC.to_secs(1.2)],
-    'waste_drain' : [FC(TP, WA, 'WD').run_cmds, FC.to_secs(0.2)],
-    'dply_wash' : [FC(TP, WA, 'WS').run_cmds, FC.to_secs(0.12)],
-    'dply_dryer' : [FC(TP, DR, 'DS').run_cmds, FC.to_secs(0.12)],
-    'abort_dryer' : [FC(TP, DR, 'AD').run_cmds, FC.to_secs(0.1)],
-    'abort_wash' : [FC(TP, DR, 'AW').run_cmds, FC.to_secs(0.1)],
-    'get_dtemp' : [FC(TP, DR, 'CT').run_cmds, FC.to_secs(0.1)],
-    'primeA' : [FC(TP, WA, 'PA').run_cmds, FC.to_secs(0.2)],
-    'primeDI' : [FC(TP, WA, 'PD').run_cmds, FC.to_secs(0.2)],
-    'set_dtime' : [FC(TP, DR, 'TM').setparam(10), FC.to_secs(0.12)],
-    'set_dtemp' : [FC(TP, DR, 'MT').setparam(50), FC.to_secs(0.12)],
-    'discon_resp' : [FC(TP, 'ACK,@').util_cmds, FC.to_secs(0.07)],
-    'ack2' : [FC(TP, 'ACK').util_cmds, FC.to_secs(0.07)],
-    'un_op' : [FC(TP, 'ACK,0').util_cmds, FC.to_secs(0.07)]
+    'connect' : [FC(TP, '@').util_cmds, FC.to_secs(0.02)],
+    'ack' : [FC(TP, 'ACK,1').util_cmds, FC.to_secs(0.02)],
+    'nak' : [FC(TP, 'NAK,@').util_cmds, FC.to_secs(0.02)],
+    'opendoor_washer' : [FC(TP, WA, 'OD').run_cmds, FC.to_secs(0.05)],
+    'closedoor_washer' : [FC(TP, WA, 'CD').run_cmds, FC.to_secs(0.05)],
+    'opendoor_dryer' : [FC(TP, DR, 'OD').run_cmds, FC.to_secs(0.05)],
+    'closedoor_dryer' : [FC(TP, DR, 'CD').run_cmds, FC.to_secs(0.05)],
+    'start_dryer' : [FC(TP, DR, 'SD').run_cmds, FC.to_secs(0.05)],
+    'custom2_proc' : [FC(TP, WA, 'S2').run_cmds, FC.to_secs(0.05)],
+    'self_clean' : [FC(TP, WA, 'CL').run_cmds, FC.to_secs(0.32)],
+    'check_sensor' : [FC(TP, WA, 'SC').run_cmds, FC.to_secs(1.05)],
+    'waste_drain' : [FC(TP, WA, 'WD').run_cmds, FC.to_secs(0.03)],
+    'dply_wash' : [FC(TP, WA, 'WS').run_cmds, FC.to_secs(0.02)],
+    'dply_dryer' : [FC(TP, DR, 'DS').run_cmds, FC.to_secs(0.02)],
+    'abort_dryer' : [FC(TP, DR, 'AD').run_cmds, FC.to_secs(0.02)],
+    'abort_wash' : [FC(TP, DR, 'AW').run_cmds, FC.to_secs(0.02)],
+    'get_dtemp' : [FC(TP, DR, 'CT').run_cmds, FC.to_secs(0.02)],
+    'primeA' : [FC(TP, WA, 'PA').run_cmds, FC.to_secs(0.1)],
+    'primeDI' : [FC(TP, WA, 'PD').run_cmds, FC.to_secs(0.1)],
+    'set_dtime' : [FC(TP, DR, 'TM').setparam(10), FC.to_secs(0.02)],
+    'set_dtemp' : [FC(TP, DR, 'MT').setparam(50), FC.to_secs(0.02)],
+    'discon_resp' : [FC(TP, 'ACK,@').util_cmds, FC.to_secs(0.02)],
+    'ack2' : [FC(TP, 'ACK').util_cmds, FC.to_secs(0.02)],
+    'ack3' : [FC(TP, 'ACK,00').util_cmds, FC.to_secs(0.02)],
+    'un_op' : [FC(TP, 'ACK,0').util_cmds, FC.to_secs(0.02)]
         }
 #}}}
 
@@ -70,12 +78,16 @@ class tipnovus:
             self.buffer_wait_time = send_cmd_dict[str_command][1]
 
     @property
-    def command(self):
+    def word_command(self):
         return self.str_command
 
-    @command.setter
-    def commmand(self, command):
+    @word_command.setter
+    def word_commmand(self, command):
         self.str_command = command
+
+    @property
+    def code_command(self):
+        return send_cmd_dict[self.str_command][0]
 
     @property
     def encode_str_cmd(self):
@@ -84,31 +96,28 @@ class tipnovus:
 
 class tpserial:
     def __init__(self):
-        pass
-
-    @property
-    def init(self):
         self._ser = None
         self._baudrate = 115200
-        self._port = "COM17"
+        self._port = "/dev/ttyUSB0"
         self._timeout = 10
-        return self
 
     @property
     def connect(self):
         try:
             self._ser = serial.Serial(port = self._port, baudrate = self._baudrate, timeout = self._timeout)
-            return self._ser
+            self._ser.reset_output_buffer
+            self._ser.reset_input_buffer
+            handle_logs(f"Connected to TipNovus! ({self._port})")
+            return self
         except serial.SerialException as e:
-            sys.stdout.write(f"Error occured during serial connection - {e}")
-            logging.info(f"Error occured during serial connection - {e}")
+            handle_logs(f"Error occured during serial connection - {e}")
             sys.exit(1)
 
     @property
     def disconnect(self):
         if self._ser.isOpen():
             self._ser.close()
-            sys.stdout.write(f'Disconnecting from serial port {self._port}!')
+            handle_logs(f'Disconnecting from serial port {self._port}!')
 
     @property
     def is_connected(self):
@@ -117,39 +126,41 @@ class tpserial:
         except:
             return False
 
-    def write(self, byte_command):
+    def write_cmd(self, byte_command):
         self.byte_command = byte_command
         try:
             self._ser.write(byte_command)
+            logger.debug(f'Sent {byte_command} to serial device')
         except Exception as e:
-            sys.stdout.write(f'Serial connection errored whilst sending {byte_command}: {e}')
+            handle_logs(f'Serial connection errored whilst sending {byte_command}: {e}')
 
     @property
-    def read(self):
+    def read_resp(self):
         _response = self._ser.read(1)
         while True:
-            _response = self._ser.in_waiting
-            if not _response:
+            n_ = self._ser.in_waiting
+            if not n_:
                 break
             else:
-                _response += self._ser.read()
+                sleep(0.1)
+                _response += self._ser.read(n_)
         return _response.decode()
 
     def __enter__(self):
         try:
             if self._ser == None:
                 self._ser = serial.Serial(port = self._port, baudrate = self._baudrate, timeout = self._timeout)
-                sys.stdout.write(f'Connected to serial port {self._port}!')
+                handle_logs(f'Connected to serial port {self._port}!')
             else:
                 if self._ser.isOpen():
                     self._ser.close()
-                    sys.stdout.write('Disconnecting...')
+                    handle_logs('Disconnecting...')
                 else:
                     self._ser.open()
-                    sys.stdout.write(f'Connected to serial port {self._port}!')
+                    handle_logs(f'Connected to serial port {self._port}!')
             return self._ser
         except serial.SerialException as e:
-            sys.stdout.write(f'Error occured: {e}')
+            handle_logs(f'Error occured: {e}')
             sys.exit(1)
 
     def __exit__(self, exc_type, exc_val, traceback):

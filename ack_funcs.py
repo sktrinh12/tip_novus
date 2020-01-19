@@ -1,5 +1,4 @@
 str_resp = ''
-
 code1 = ''
 code2 = ''
 
@@ -62,6 +61,10 @@ status_codes_2 = {
     '68' : 'SENSOR CHECK'
     }
 
+def print_output(output):
+    print(output)
+    #yield f"data: {output}\n\n"
+
 def output_status(split_str_resp, Er_code):
     global code1
     global code2
@@ -88,13 +91,14 @@ def output_status(split_str_resp, Er_code):
 def dply_cmds(sub_response_str):
     try:
         sub_response_str = sub_response_str.strip().replace('\x0b','')
-        logging.debug(f"length of 'sub_response_string': {len(sub_response_str)}")
         if len(sub_response_str) == 3 or len(sub_response_str) == 4:
             cd1 = status_codes[sub_response_str[:2]]
             cd2 = status_codes_2[sub_response_str[2:]]
 
             print_output(f"the compartment sent the status code: {sub_response_str}")
             print_output(f"status code interpreted as: code1: {cd1}, code2: {cd2}")
+            return sub_response_str, cd1, cd2
+            #return the 3-4 digit code and the interpretations of both
 
         elif len(sub_response_str) > 0 and len(sub_response_str) < 3:
             time_remaining = int(sub_response_str.strip())
@@ -102,6 +106,7 @@ def dply_cmds(sub_response_str):
                 print_output("the compartment is not in operation")
             else:
                 print_output(f"time remaining for run is: {time_remaining}")
+            return sub_response_str.strip()
     except Exception as e:
         print_output(f"error parsing the sub_response string: {sub_response_str.strip()} - {str(e)}")
 
@@ -119,6 +124,10 @@ def sensor_check(sub_response_str):
                 print_output("sensor check passed")
         else:
             print_output(f"The sensor_check output: '{sub_response_str}' is not interpretable")
+        if bad_sensor:
+            return ', '.join(bad_sensor)
+        else:
+            return bad_sensor
     except Exception as e:
         print_output(f"""a problem occured parsing the sensor check repsonse string - {str(e)}\n""")
 
