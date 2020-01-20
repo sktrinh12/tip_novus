@@ -1,3 +1,5 @@
+from logging_decor import logger
+
 status_codes = {
     '11' : 'SUB-PROTOCOL STARTED',
     '12' : 'SUB-PROTOCOL FINISHED',
@@ -67,10 +69,10 @@ def error_msg_handle(split_str_resp):
         codemsg_2 = status_codes_2[split_str_resp[2:]]
         code1 = split_str_resp[:2]
         code2 = split_str_resp[2:]
-        print_output(('error', f"""error code: {code1}{code2} {codemsg_1} {codemsg_2}"""))
+        print_output(f"error code: {cd1}{cd2} {msg_1} {msg_2}")
         return code1, code2, codemsg_1, codemsg_2
     except Exception as e:
-        logging.critical(f"no code string found > {str(e)}")
+        logger.critical(f"no code string found > {str(e)}")
         return None, None, None, None
 
 def dply_cmds(sub_response_str):

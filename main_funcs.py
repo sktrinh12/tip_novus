@@ -4,6 +4,7 @@ from ack_funcs import *
 from rest_sql3_class import *
 from tipnovus_class_api import *
 
+
 #{{{ MAIN FUNCTIONS
 
 @logit(logger)
@@ -17,36 +18,41 @@ def send_cmd(cmd):
     str_response = tp_ser.read_resp
     if str_response == tp.code_command:
         print_output(f"resp: {str_response} (SUCCESS)")
+    if cmd.startswith('set_'):
+        srch = f'{tp.code_command[:12]}'
+        if re.search(srch + '\d{1,2}#', str_response):
+            print_output(f"resp: {str_response} (SUCCESS)")
     output = f'func: {send_cmd.__name__}', f'sent: {tp.code_command}', f'resp: {str_response}'
     #print(output)
     handle_logs(output)
     return tp.code_command, str_response
 
-def ack_cmd(cmd_=None):
-    if cmd_:
-        cmd = tipnovus(cmd_)
-        status_code_dict = {'ack' : ''}
+def ack_cmd(cmd):
+    cmd = tipnovus(cmd_) #just to print out '*' for long delays
+    status_code_dict = {'ack' : ''}
     ack = tipnovus('ack')
     tp_ser.write_cmd(ack.encode_str_cmd)
-    if cmd_:
-        if cmd.buffer_wait_time > 7:
-            for i in range(round(cmd.buffer_wait_time)):
-                print_output('*')
-                sleep(1)
-                if i % 8 == 0:
-                    output = f'~{cmd.buffer_wait_time - i} secs left'
-                    print_output(output)
-                    logger.debug(output)
-        else:
-            sleep(cmd.buffer_wait_time)
+    if cmd.buffer_wait_time > 7:
+        for i in range(round(cmd.buffer_wait_time)):
+            print_output('*')
+            sleep(1)
+            if i % 8 == 0:
+                output = f'~{cmd.buffer_wait_time - i} secs left'
+                print_output(output)
+                logger.debug(output)
+    else:
+        sleep(cmd.buffer_wait_time)
     str_response = tp_ser.read_resp
     spr = split_resp(str_response) #returns the sub-string response
     if 'ER' in str_response:
         cd1, cd2, msg1, msg2 = error_msg_handle(spr)
+        handle_logs(('error', f"error code: {cd1}{cd2} {msg_1} {msg_2}"))
         status_code_dict['status'] = f'{cd1}{cd2} {msg1}{msg2}'
         status_code_dict['interp'] = 'critical error during run'
     if not spr:
-        print_output(('error', f"No response string to parse from the ping cmd: {cmd_}"))
+        output = f"No response string to parse from the ping cmd: {cmd_}"
+        handle_logs(('error', output))
+        print_output(output)
     else:
         status_code_dict['ack'] = ack.code_command
     if 'dply' in cmd_:
@@ -106,7 +112,7 @@ def disconnect_tp():
 #}}}
 
 
-#{{{ FUNCTIONS RELATED TO API MECHANISM
+#{{{ SCHEMA RELATED FUNCTIONS
 def update_data(current_ts, cmd, code_cmd, resp):
     with tpdb(db_filepath) as db:
         db.execute("DELETE FROM CMDRESPONSE")
@@ -117,9 +123,20 @@ def update_data(current_ts, cmd, code_cmd, resp):
 
 
 def ref_fx_cmd_proc(cmd, fx):
+    setval_request = request.form.get('setval', False)
+    input_cmd_dict = {'code_cmd' : '', 'cmd' : cmd, 'resp' : ''} # initialise
+    if setval_request and fx.__name__ == "send_cmd":
+        tpsetcmd_schema = tp_ser_check_setcmd_schema() # checks if it is a set_d type cmd
+        tpsetcmd_schema.load({'cmd_' : cmd})
+        # temporarily fudge the resp/code_cmd to just check/validate the setval entry
+        input_cmd_dict['code_cmd'] = input_cmd_dict['resp'] = "01,ACK,#"
+        input_cmd_dict['setval'] = setval_request
+        cmd_wo_setval = cmd
+        tpcmd_schema.load(input_cmd_dict) # actually only checking the setval
+        cmd = cmd + setval_request.split(';')[1] #concatenate the cmd to update it with the setval
     data, response = fx(cmd) #ack or send, sent is the code cmd and cmd is the human readable cmd
-    input_cmd_dict = {'code_cmd' : '', 'cmd' : cmd, 'resp' : response}
-    if isinstance(data, dict):
+    input_cmd_dict['resp'] = response
+    if isinstance(data, dict): #an ack cmd returns a dict
         sent = data['ack']
         if len(data.keys()) > 2: #washer status code response 3-4 digits with interpretation
             input_cmd_dict['interp'] = data['interp']
@@ -132,7 +149,9 @@ def ref_fx_cmd_proc(cmd, fx):
     current_ts = datetime.now().strftime('%G-%b-%d %H:%M:%S')
     schema_check = False
     try: #to load the cmd using the marshmallow schema defined above
-        tpcmd_schema.load(input_cmd_dict)
+        if setval_request and fx.__name__ == "send_cmd":
+            validate_val(cmd_wo_setval, input_cmd_dict['code_cmd'], input_cmd_dict['setval']) #validate the setval and code_cmd
+        tpcmd_schema.load(input_cmd_dict) # if setval; check second time with real data
         schema_check = True
     except ValidationError as err:
         pprint(err.messages)
@@ -149,24 +168,9 @@ def ref_fx_cmd_proc(cmd, fx):
         handle_logs(output)
         input_cmd_dict['resp'] = response
     return schema_check, input_cmd_dict
-#}}}
 
-
-#{{{ SCHEMA RELATED FUNCTIONS
 def abort_if_invalid(input_str):
     msg = "The command, '{}', its reponse or the set parameters were not in a valid format".format(input_str)
     abort(404, error=msg)
     handle_logs(('error', msg))
-
-def validate_val(cmd, val):
-    if cmd == 'set_dtime':
-        if val[:4] != 'time':
-            msg = 'The set parameter and cmd string do not match'
-            raise ValidationError(msg)
-            handle_logs(('error', msg))
-    elif cmd == 'set_dtemp':
-        if val[:4] != 'temp':
-            msg = 'The set parameter and cmd string do not match'
-            raise ValidationError(msg)
-            handle_logs(('error', msg))
 #}}}

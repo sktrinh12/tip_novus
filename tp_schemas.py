@@ -1,7 +1,7 @@
-import re
 from marshmallow import Schema, fields, pprint, ValidationError, validates#, post_load
 from main_funcs import handle_logs
 from tipnovus_class_api import send_cmd_dict
+import re
 
 #{{{ TPSerSetCmdSchema class
 class tp_ser_check_setcmd_schema(Schema):
@@ -19,52 +19,56 @@ class tp_ser_cmd_schema(Schema):
     cmd = fields.String(required = True)
     resp = fields.String(required = True)
     code_cmd = fields.String(required = True)
-    setcmd = fields.String()
+    setval = fields.String()
     status = fields.String()
     interp = fields.String()
 
     @validates('cmd')
     def validate_cmd(self, cmd):
         if cmd not in send_cmd_dict.keys():
-            msg = f"Invalid command string - '{cmd}'"
+            msg = f"Invalid command string -> '{cmd}'"
             raise ValidationError(msg)
             handle_logs(('error', msg))
 
     @validates('code_cmd')
     def validate_code_cmd(self, code_cmd):
         if code_cmd not in [v[0] for v in send_cmd_dict.values()]:
-            msg = f"Invalid code command string - '{code_cmd}'"
-            raise ValidationError(msg)
-            handle_logs(('error', msg))
+            re_match = '01,TI,DR,{},{}'
+            time_m = '([1-9]|[1-9][0-9]|100)#'
+            temp_m = '([2-6][0-9]|70)#'
+            if not any(re.search(rgs, code_cmd) for rgs in [re_match.format('TM', time_m), re_match.format('MT', temp_m)]):
+                msg = f"Invalid code command string -> '{code_cmd}'"
+                raise ValidationError(msg)
+                handle_logs(('error', msg))
 
-    @validates('setcmd')
-    def validate_setcmd(self, setcmd):
-        if ';' in setcmd:
-            typeof, value = setcmd.split(';')
+    @validates('setval')
+    def validate_setcmd(self, setval): # input would be like: 'time;8' or 'temp;24'
+        if ';' in setval:
+            typeof, val = setval.split(';')
             if typeof == 'time':
-                if not value.isdigit():
-                    msg = f'Incorrect value to set time parameter - {setcmd}'
+                if not val.isdigit():
+                    msg = f'Incorrect value to set time parameter -> {val}'
                     raise ValidationError(msg)
                     handle_logs(('error', msg))
-                if int(value) < 1 or int(value) > 100:
-                    msg = f'Incorrect range for setting time; >1 and <100 - {setcmd}'
+                if int(val) < 1 or int(val) > 100:
+                    msg = f'Incorrect range for setting time; >1 and <100 -> {val}'
                     raise ValidationError(msg)
                     handle_logs(f('error', msg))
             elif typeof == 'temp':
-                if not value.isdigit():
-                    msg = f'Incorrect value to set temp parameter - {setcmd}'
+                if not val.isdigit():
+                    msg = f'Incorrect value to set temp parameter -> {val}'
                     raise ValidationError(msg)
                     handle_logs(('error', msg))
-                if int(value) < 20 or int(value) > 70:
-                    msg = f'Incorrect range for setting temperature; >20 and <70 - {setcmd}'
+                if int(val) < 20 or int(val) > 70:
+                    msg = f'Incorrect range for setting temperature; >20 and <70 -> {val}'
                     raise ValidationError(msg)
                     handle_logs(('error', msg))
             else:
-                msg = f"Invalid command string; can only set 'temp' or 'time' - {setcmd}"
+                msg = f"Invalid command string; can only set 'temp' or 'time' -> {val}"
                 raise ValidationError(msg)
                 handle_logs(('error', msg))
         else:
-            msg = f'Incorrect format for setting parameter - {setcmd}'
+            msg = f"Improper string format, requires ';' -> {setval}"
             raise ValidationError(msg)
             handle_logs(('error', msg))
 
@@ -73,7 +77,31 @@ class tp_ser_cmd_schema(Schema):
         if resp not in [a[0] for a in send_cmd_dict.values()]:
             # if not a dryer time remaining resp or check_sensor response
             if not re.search('01,ACK,\d{1,4},#', resp) or not re.search('[01]{7}',resp):
-                msg = f'Invalid response string - {resp}'
+                msg = f'Invalid response string -> {resp}'
                 handle_logs(('error', msg))
                 raise ValidationError(msg)
+#}}}
+
+#{{{ SCHEMA RELATED FUNCTIONS
+
+def validate_val(cmd, code_cmd, setval):
+    typeof, val = setval.split(';')
+    if cmd == 'set_dtime':
+        if typeof != 'time':
+            msg = 'The set parameter and cmd string do not match -> {setval} != {cmd}'
+            handle_logs(('error', msg))
+            raise ValidationError(msg)
+        if not re.search(f'(01,TI,DR,TM,{val})', code_cmd):
+            msg = f'The set parameter and code_cmd string do not match -> {code_cmd} != {setval}'
+            handle_logs(('error', msg))
+            raise ValidationError(msg)
+    elif cmd == 'set_dtemp':
+        if typeof != 'temp':
+            msg = 'The set parameter and cmd string do not match -> {setval} != {cmd}'
+            handle_logs(('error', msg))
+            raise ValidationError(msg)
+        if not re.search(f'(01,TI,DR,MT,{val})', code_cmd):
+            msg = f'The set parameter and code_cmd string do not match -> {code_cmd} != {setval}'
+            handle_logs(('error', msg))
+            raise ValidationError(msg)
 #}}}

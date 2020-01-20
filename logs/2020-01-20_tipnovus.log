@@ -1,0 +1,55 @@
+20-Jan-2020 13:18:54, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_resp_get | resp: 01,ACK,#
+20-Jan-2020 13:20:53, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 13:20:53 | cmd: time;8 | code_cmd: 01,TI,DR,DT,8# | resp: 01,ACK,#
+20-Jan-2020 13:20:53, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 13:20:53 | sent: time;8 | resp: 01,ACK,#
+20-Jan-2020 13:23:48, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 13:23:48 | cmd: time;0 | code_cmd: 01,TI,DR,DT,8# | resp: 01,ACK,#
+20-Jan-2020 13:23:48, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 13:23:48 | sent: time;0 | resp: 01,ACK,#
+20-Jan-2020 13:24:57, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string - '01,TI,DR,DT,8#'"], 'setcmd': ['Incorrect range for setting time; >1 and <100 - time;0']}
+20-Jan-2020 13:26:11, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string - '01,TI,DR,DT,8#'"]}
+20-Jan-2020 13:26:45, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string - '01,TI,DR,DT,8#'"], 'setcmd': ['Incorrect range for setting time; >1 and <100 - time;101']}
+20-Jan-2020 14:13:12, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string; set values are outside the limit - '01,TI,DR,DT,8#'"], 'setcmd': ['Incorrect range for setting time; >1 and <100 - time;101']}
+20-Jan-2020 14:13:47, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string; set values are outside the limit - '01,TI,DR,TM,8#'"], 'setcmd': ['Incorrect range for setting time; >1 and <100 - time;101']}
+20-Jan-2020 14:14:10, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string; set values are outside the limit - '01,TI,DR,TM,8#'"]}
+20-Jan-2020 14:14:33, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string; set values are outside the limit - '01,TI,DR,TM,8#'"]}
+20-Jan-2020 14:32:48, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 14:32:48 | cmd: time;10 | code_cmd: 01,TI,DR,TM,8# | resp: 01,ACK,#
+20-Jan-2020 14:32:48, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 14:32:48 | sent: time;10 | resp: 01,ACK,#
+20-Jan-2020 14:34:54, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and cmd string do not match']
+20-Jan-2020 14:57:54, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 14:57:54 | cmd: set_dtime | code_cmd: 01,TI,DR,TM,8# | resp: 01,ACK,#
+20-Jan-2020 14:57:54, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 14:57:54 | sent: set_dtime | resp: 01,ACK,#
+20-Jan-2020 15:22:37, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'setval': ["Improper string format, requires ';' - 10"]}
+20-Jan-2020 15:22:50, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 15:22:50 | cmd: set_dtimetime;10 | code_cmd: 01,TI,DR,TM,8# | resp: 01,ACK,#
+20-Jan-2020 15:22:50, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 15:22:50 | sent: set_dtimetime;10 | resp: 01,ACK,#
+20-Jan-2020 15:35:26, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and code_cmd string do not match - 01,TI,DR,TM,8# | time;10']
+20-Jan-2020 15:36:11, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and code_cmd string do not match - 01,TI,DR,TM,8# | time;10']
+20-Jan-2020 15:36:31, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and code_cmd string do not match - 01,TI,DR,TM,8# | time;10']
+20-Jan-2020 15:36:50, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 15:36:50 | cmd: set_dtime10 | code_cmd: 01,TI,DR,TM,10# | resp: 01,ACK,#
+20-Jan-2020 15:36:50, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 15:36:50 | sent: set_dtime10 | resp: 01,ACK,#
+20-Jan-2020 15:37:46, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 15:37:46 | cmd: set_dtime100 | code_cmd: 01,TI,DR,TM,100# | resp: 01,ACK,#
+20-Jan-2020 15:37:46, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 15:37:46 | sent: set_dtime100 | resp: 01,ACK,#
+20-Jan-2020 15:37:54, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and code_cmd string do not match - 01,TI,DR,TM,110# | time;100']
+20-Jan-2020 15:38:05, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string - '01,TI,DR,TM,110#'"], 'setval': ['Incorrect range for setting time; >1 and <100 - 110']}
+20-Jan-2020 15:38:52, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and code_cmd string do not match - 01,TI,DR,TM,110# | time;100']
+20-Jan-2020 15:39:13, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 15:39:13 | cmd: set_dtime | code_cmd: 01,TI,DR,TM,100# | resp: 01,ACK,#
+20-Jan-2020 15:39:13, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 15:39:13 | sent: set_dtime | resp: 01,ACK,#
+20-Jan-2020 15:45:29, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 15:45:29 | cmd: set_dtime100 | code_cmd: 01,TI,DR,TM,100# | resp: 01,ACK,#
+20-Jan-2020 15:45:29, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 15:45:29 | sent: set_dtime100 | resp: 01,ACK,#
+20-Jan-2020 15:45:53, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and code_cmd string do not match - 01,TI,DR,MT,100# | time;100']
+20-Jan-2020 15:46:02, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and cmd string do not match']
+20-Jan-2020 15:46:42, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string - '01,TI,DR,MT,100#'"], 'setval': ['Incorrect range for setting temperature; >20 and <70 - 100']}
+20-Jan-2020 15:47:03, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 15:47:03 | cmd: set_dtemp20 | code_cmd: 01,TI,DR,MT,20# | resp: 01,ACK,#
+20-Jan-2020 15:47:03, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 15:47:03 | sent: set_dtemp20 | resp: 01,ACK,#
+20-Jan-2020 16:26:15, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 16:26:15 | cmd: set_dtemp20 | code_cmd: 01,TI,DR,MT,20# | resp: 01,ACK,#
+20-Jan-2020 16:26:15, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 16:26:15 | sent: set_dtemp20 | resp: 01,ACK,#
+20-Jan-2020 16:26:27, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 16:26:27 | cmd: set_dtemp50 | code_cmd: 01,TI,DR,MT,50# | resp: 01,ACK,#
+20-Jan-2020 16:26:27, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 16:26:27 | sent: set_dtemp50 | resp: 01,ACK,#
+20-Jan-2020 17:54:17, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 17:54:17 | cmd: set_dtemp50 | code_cmd: 01,TI,DR,MT,50# | resp: 01,ACK,#
+20-Jan-2020 17:54:17, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 17:54:17 | sent: set_dtemp50 | resp: 01,ACK,#
+20-Jan-2020 18:04:42, cmd_logger, ERROR [logging_decor.py line:33],	Invalid response string - 
+20-Jan-2020 18:04:42, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'resp': ['Invalid response string - ']}
+20-Jan-2020 18:08:14, cmd_logger, ERROR [logging_decor.py line:33],	Invalid response string -> 
+20-Jan-2020 18:08:14, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'resp': ['Invalid response string -> ']}
+20-Jan-2020 18:08:30, cmd_logger, ERROR [logging_decor.py line:33],	The set parameter and code_cmd string do not match -> 01,TI,DR,MT,50# != temp;22
+20-Jan-2020 18:08:30, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and code_cmd string do not match -> 01,TI,DR,MT,50# != temp;22']
+20-Jan-2020 18:08:48, cmd_logger, ERROR [logging_decor.py line:33],	Invalid response string -> 01,AC,#
+20-Jan-2020 18:08:48, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'resp': ['Invalid response string -> 01,AC,#']}
+20-Jan-2020 18:08:55, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 18:08:55 | cmd: set_dtemp22 | code_cmd: 01,TI,DR,MT,22# | resp: 01,ACK,#
+20-Jan-2020 18:08:55, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 18:08:55 | sent: set_dtemp22 | resp: 01,ACK,#
