@@ -83,25 +83,26 @@ class tp_ser_cmd_schema(Schema):
 #}}}
 
 #{{{ SCHEMA RELATED FUNCTIONS
-
 def validate_val(cmd, code_cmd, setval):
     typeof, val = setval.split(';')
     if cmd == 'set_dtime':
         if typeof != 'time':
-            msg = 'The set parameter and cmd string do not match -> {setval} != {cmd}'
+            msg = f'The set parameter and cmd string do not accord with each other -> {setval} != {cmd}'
             handle_logs(('error', msg))
             raise ValidationError(msg)
-        if not re.search(f'(01,TI,DR,TM,{val})', code_cmd):
-            msg = f'The set parameter and code_cmd string do not match -> {code_cmd} != {setval}'
-            handle_logs(('error', msg))
-            raise ValidationError(msg)
+        if code_cmd not in [a[0] for a in send_cmd_dict.values()]:
+            if not re.search(f'(01,TI,DR,TM,{val})', code_cmd):
+                msg = f'The setval and code_cmd string do not accord with each other -> {setval} & {code_cmd}'
+                handle_logs(('error', msg))
+                raise ValidationError(msg)
     elif cmd == 'set_dtemp':
         if typeof != 'temp':
-            msg = 'The set parameter and cmd string do not match -> {setval} != {cmd}'
+            msg = f'The set parameter and cmd string do not accord with each other -> {setval} != {cmd}'
             handle_logs(('error', msg))
             raise ValidationError(msg)
-        if not re.search(f'(01,TI,DR,MT,{val})', code_cmd):
-            msg = f'The set parameter and code_cmd string do not match -> {code_cmd} != {setval}'
-            handle_logs(('error', msg))
-            raise ValidationError(msg)
+        if code_cmd not in [a[0] for a in send_cmd_dict.values()]:
+            if not re.search(f'(01,TI,DR,MT,{val})', code_cmd):
+                msg = f'The setval and code_cmd string do not accord with each other -> {setval} & {code_cmd}'
+                handle_logs(('error', msg))
+                raise ValidationError(msg)
 #}}}

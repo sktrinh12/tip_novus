@@ -53,3 +53,97 @@
 20-Jan-2020 18:08:48, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'resp': ['Invalid response string -> 01,AC,#']}
 20-Jan-2020 18:08:55, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 18:08:55 | cmd: set_dtemp22 | code_cmd: 01,TI,DR,MT,22# | resp: 01,ACK,#
 20-Jan-2020 18:08:55, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 18:08:55 | sent: set_dtemp22 | resp: 01,ACK,#
+20-Jan-2020 18:15:58, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 18:15:58 | cmd: opendoor_dryer | code_cmd: 01,TI,DR,OD,# | resp: 01,TI,DR,OD,#
+20-Jan-2020 18:15:58, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 18:15:58 | sent: opendoor_dryer | resp: 01,TI,DR,OD,#
+20-Jan-2020 19:03:44, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 19:03:44 | cmd: set_dtemp22 | code_cmd: 01,TI,DR,MT,22# | resp: 01,ACK,#
+20-Jan-2020 19:03:44, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 19:03:44 | sent: set_dtemp22 | resp: 01,ACK,#
+20-Jan-2020 19:08:31, cmd_logger, ERROR [logging_decor.py line:33],	Invalid response string -> 01,Ti,DR,TM,22#
+20-Jan-2020 19:08:31, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'resp': ['Invalid response string -> 01,Ti,DR,TM,22#']}
+20-Jan-2020 19:12:14, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 19:12:14 | cmd: set_dtime22 | code_cmd: 01,TI,DR,TM,22# | resp: 01,ACK,#
+20-Jan-2020 19:12:14, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 19:12:14 | sent: set_dtime22 | resp: 01,ACK,#
+20-Jan-2020 19:37:39, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 19:37:39 | cmd: dply_dryer | code_cmd: 01,TI,DR,DS,# | resp: 01,ACK,#
+20-Jan-2020 19:37:39, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 19:37:39 | sent: dply_dryer | resp: 01,ACK,#
+20-Jan-2020 19:39:32, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 19:39:32 | cmd: dply_dryer | code_cmd: 01,TI,DR,DS,# | resp: 01,ACK,#
+20-Jan-2020 19:39:32, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 19:39:32 | sent: dply_dryer | resp: 01,ACK,#
+20-Jan-2020 19:41:07, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'cmd_': ['Must be a set command']}
+20-Jan-2020 19:41:26, cmd_logger, ERROR [logging_decor.py line:33],	The set parameter and code_cmd string do not match -> 01,TI,DR,DS,# != time;22
+20-Jan-2020 19:41:26, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and code_cmd string do not match -> 01,TI,DR,DS,# != time;22']
+20-Jan-2020 20:03:52, cmd_logger, ERROR [logging_decor.py line:33],	Invalid response string -> 01,TI,DR,TM,22#
+20-Jan-2020 20:03:52, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'resp': ['Invalid response string -> 01,TI,DR,TM,22#']}
+20-Jan-2020 20:05:13, cmd_logger, ERROR [logging_decor.py line:33],	Invalid response string -> 01,TI,DR,TM,22
+20-Jan-2020 20:05:13, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'resp': ['Invalid response string -> 01,TI,DR,TM,22']}
+20-Jan-2020 20:05:25, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 20:05:25 | cmd: set_dtime22 | code_cmd: 01,TI,DR,TM,22# | resp: 01,ACK,#
+20-Jan-2020 20:05:25, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 20:05:25 | sent: set_dtime22 | resp: 01,ACK,#
+20-Jan-2020 20:06:04, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 20:06:04 | cmd: set_dtime22 | code_cmd: 01,TI,DR,TM,22# | resp: 01,ACK,#
+20-Jan-2020 20:06:04, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 20:06:04 | sent: set_dtime22 | resp: 01,ACK,#
+20-Jan-2020 20:08:45, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 20:08:45 | cmd: set_dtime22 | code_cmd: 01,TI,DR,TM,22# | resp: 01,ACK,#
+20-Jan-2020 20:08:45, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 20:08:45 | sent: set_dtime22 | resp: 01,ACK,#
+20-Jan-2020 20:12:34, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 20:12:34 | cmd: set_dtime22 | code_cmd: 01,TI,DR,TM,22# | resp: 01,ACK,#
+20-Jan-2020 20:12:34, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 20:12:34 | sent: set_dtime22 | resp: 01,ACK,#
+20-Jan-2020 21:26:36, cmd_logger, ERROR [logging_decor.py line:33],	The set parameter and code_cmd string do not accord with each other -> 01,ACK,# != time;22
+20-Jan-2020 21:26:36, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and code_cmd string do not accord with each other -> 01,ACK,# != time;22']
+20-Jan-2020 21:27:07, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 21:27:07 | cmd: set_dtime22 | code_cmd: 01,TI,DR,TM,22# | resp: 01,TI,DR,TM,22#
+20-Jan-2020 21:27:07, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 21:27:07 | sent: set_dtime22 | resp: 01,TI,DR,TM,22#
+20-Jan-2020 21:32:16, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 21:32:16 | cmd: set_dtime22 | code_cmd: 01,TI,DR,TM,22# | resp: 01,ACK,#
+20-Jan-2020 21:32:16, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 21:32:16 | sent: set_dtime22 | resp: 01,ACK,#
+20-Jan-2020 21:32:32, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 21:32:32 | cmd: set_dtime22 | code_cmd: 01,TI,DR,TM,22# | resp: 01,TI,DR,TM,22#
+20-Jan-2020 21:32:32, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 21:32:32 | sent: set_dtime22 | resp: 01,TI,DR,TM,22#
+20-Jan-2020 21:32:51, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 21:32:51 | cmd: set_dtime22 | code_cmd: 01,TI,DR,TM,22# | resp: 01,ACK,#
+20-Jan-2020 21:32:51, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 21:32:51 | sent: set_dtime22 | resp: 01,ACK,#
+20-Jan-2020 21:33:05, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 21:33:05 | cmd: set_dtime22 | code_cmd: 01,TI,DR,TM,22# | resp: 01,TI,DR,TM,22#
+20-Jan-2020 21:33:05, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 21:33:05 | sent: set_dtime22 | resp: 01,TI,DR,TM,22#
+20-Jan-2020 21:48:48, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 21:48:48 | cmd: dply_dryer | code_cmd: 01,TI,DR,DS,# | resp: 01,TI,DR,DS,#
+20-Jan-2020 21:48:48, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 21:48:48 | sent: dply_dryer | resp: 01,TI,DR,DS,#
+20-Jan-2020 21:56:20, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 21:56:20 | cmd: dply_dryer | code_cmd: 01,TI,DR,DS,# | resp: 01,TI,DR,DS,#
+20-Jan-2020 21:56:20, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 21:56:20 | sent: dply_dryer | resp: 01,TI,DR,DS,#
+20-Jan-2020 21:58:15, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 21:58:15 | cmd: dply_dryer | code_cmd: 01,TI,DR,DS,# | resp: 01,TI,DR,DS,#
+20-Jan-2020 21:58:15, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 21:58:15 | sent: dply_dryer | resp: 01,TI,DR,DS,#
+20-Jan-2020 22:02:53, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:02:53 | cmd: dply_dryer | code_cmd: 01,TI,DR,DS,# | resp: 01,TI,DR,DS,#
+20-Jan-2020 22:02:53, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:02:53 | sent: dply_dryer | resp: 01,TI,DR,DS,#
+20-Jan-2020 22:03:06, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:03:06 | cmd: dply_dryer | code_cmd: 01,TI,DR,DS,# | resp: 01,ACK,#
+20-Jan-2020 22:03:06, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:03:06 | sent: dply_dryer | resp: 01,ACK,#
+20-Jan-2020 22:03:46, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:03:46 | cmd: dply_dryer | code_cmd: 01,TI,DR,SD,# | resp: 01,ACK,#
+20-Jan-2020 22:03:46, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:03:46 | sent: dply_dryer | resp: 01,ACK,#
+20-Jan-2020 22:07:22, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:07:22 | cmd: dply_dryer | code_cmd: 01,TI,DR,SD,# | resp: 01,ACK,1,#
+20-Jan-2020 22:07:22, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:07:22 | sent: dply_dryer | resp: 01,ACK,1,#
+20-Jan-2020 22:07:59, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:07:59 | cmd: dply_dryer | code_cmd: 01,TI,DR,SD,# | resp: 01,ACK,1,#
+20-Jan-2020 22:07:59, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:07:59 | sent: dply_dryer | resp: 01,ACK,1,#
+20-Jan-2020 22:09:33, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string -> '01,TI,DR,MT,80#'"], 'setval': ['Incorrect range for setting temperature; >20 and <70 -> 80']}
+20-Jan-2020 22:09:59, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:09:59 | cmd: set_dtemp70 | code_cmd: 01,TI,DR,MT,70# | resp: 01,TI,DR,MT,70#
+20-Jan-2020 22:09:59, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:09:59 | sent: set_dtemp70 | resp: 01,TI,DR,MT,70#
+20-Jan-2020 22:10:34, cmd_logger, ERROR [logging_decor.py line:33],	The code_cmd string is not valid -> 01,TI,DR,MT,70#
+20-Jan-2020 22:10:34, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The code_cmd string is not valid -> 01,TI,DR,MT,70#']
+20-Jan-2020 22:13:50, cmd_logger, ERROR [logging_decor.py line:33],	The setval string is not valid -> temp;0
+20-Jan-2020 22:13:50, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The setval string is not valid -> temp;0']
+20-Jan-2020 22:14:06, cmd_logger, ERROR [logging_decor.py line:33],	The setval string is not valid -> temp;70
+20-Jan-2020 22:14:06, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The setval string is not valid -> temp;70']
+20-Jan-2020 22:15:55, cmd_logger, ERROR [logging_decor.py line:33],	The setval string do not accord with each other -> temp;70 & 01,TI,DR,MT,20#
+20-Jan-2020 22:15:55, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The setval string do not accord with each other -> temp;70 & 01,TI,DR,MT,20#']
+20-Jan-2020 22:16:33, cmd_logger, ERROR [logging_decor.py line:33],	The setval and code_cmd string do not accord with each other -> temp;70 & 01,TI,DR,MT,20#
+20-Jan-2020 22:16:33, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The setval and code_cmd string do not accord with each other -> temp;70 & 01,TI,DR,MT,20#']
+20-Jan-2020 22:16:45, cmd_logger, ERROR [logging_decor.py line:33],	The setval and code_cmd string do not accord with each other -> temp;20 & 01,TI,DR,MT,70#
+20-Jan-2020 22:16:45, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The setval and code_cmd string do not accord with each other -> temp;20 & 01,TI,DR,MT,70#']
+20-Jan-2020 22:17:01, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:17:01 | cmd: set_dtemp20 | code_cmd: 01,TI,DR,MT,20# | resp: 01,TI,DR,MT,20#
+20-Jan-2020 22:17:01, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:17:01 | sent: set_dtemp20 | resp: 01,TI,DR,MT,20#
+20-Jan-2020 22:17:19, cmd_logger, ERROR [logging_decor.py line:33],	The setval and code_cmd string do not accord with each other -> temp;20 & 01,TI,DR,MT,0#
+20-Jan-2020 22:17:19, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The setval and code_cmd string do not accord with each other -> temp;20 & 01,TI,DR,MT,0#']
+20-Jan-2020 22:17:30, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: {'code_cmd': ["Invalid code command string -> '01,TI,DR,MT,0#'"], 'setval': ['Incorrect range for setting temperature; >20 and <70 -> 0']}
+20-Jan-2020 22:17:49, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:17:49 | cmd: set_dtemp50 | code_cmd: 01,TI,DR,MT,50# | resp: 01,TI,DR,MT,50#
+20-Jan-2020 22:17:49, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:17:49 | sent: set_dtemp50 | resp: 01,TI,DR,MT,50#
+20-Jan-2020 22:18:26, cmd_logger, ERROR [logging_decor.py line:33],	The setval and code_cmd string do not accord with each other -> temp;50 & 01,TI,DR,TM,50#
+20-Jan-2020 22:18:26, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The setval and code_cmd string do not accord with each other -> temp;50 & 01,TI,DR,TM,50#']
+20-Jan-2020 22:18:44, cmd_logger, ERROR [logging_decor.py line:33],	The set parameter and cmd string do not accord with each other -> {setval} != {cmd}
+20-Jan-2020 22:18:44, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and cmd string do not accord with each other -> {setval} != {cmd}']
+20-Jan-2020 22:19:14, cmd_logger, ERROR [logging_decor.py line:33],	The set parameter and cmd string do not accord with each other -> time;50 != set_dtemp
+20-Jan-2020 22:19:14, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The set parameter and cmd string do not accord with each other -> time;50 != set_dtemp']
+20-Jan-2020 22:19:32, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:19:32 | cmd: set_dtime50 | code_cmd: 01,TI,DR,TM,50# | resp: 01,TI,DR,TM,50#
+20-Jan-2020 22:19:32, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:19:32 | sent: set_dtime50 | resp: 01,TI,DR,TM,50#
+20-Jan-2020 22:19:47, cmd_logger, ERROR [logging_decor.py line:33],	The setval and code_cmd string do not accord with each other -> time;0 & 01,TI,DR,TM,50#
+20-Jan-2020 22:19:47, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | error: ['The setval and code_cmd string do not accord with each other -> time;0 & 01,TI,DR,TM,50#']
+20-Jan-2020 22:19:59, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:19:59 | cmd: set_dtime50 | code_cmd: 01,TI,DR,TM,50# | resp: 01,TI,DR,TM,50#
+20-Jan-2020 22:19:59, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:19:59 | sent: set_dtime50 | resp: 01,TI,DR,TM,50#
+20-Jan-2020 22:20:45, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:20:45 | cmd: dply_wash | code_cmd: 01,TI,WA,WS,# | resp: 01,TI,WA,WS,#
+20-Jan-2020 22:20:45, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:20:45 | sent: dply_wash | resp: 01,TI,WA,WS,#
+20-Jan-2020 22:21:21, cmd_logger, INFO [logging_decor.py line:38],	ts: 2020-Jan-20 22:21:21 | cmd: dply_wash | code_cmd: 01,TI,WA,WS,# | resp: 01,TI,WA,WS,#
+20-Jan-2020 22:21:21, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_upd_put | ts: 2020-Jan-20 22:21:21 | sent: dply_wash | resp: 01,TI,WA,WS,#
+20-Jan-2020 22:21:53, cmd_logger, INFO [logging_decor.py line:38],	func: tp_wbsrv_resp_get | resp: 01,TI,WA,WS,#

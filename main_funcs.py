@@ -32,7 +32,7 @@ def ack_cmd(cmd):
     status_code_dict = {'ack' : ''}
     ack = tipnovus('ack')
     tp_ser.write_cmd(ack.encode_str_cmd)
-    if cmd.buffer_wait_time > 7:
+    if cmd.buffer_wait_time > 2:
         for i in range(round(cmd.buffer_wait_time)):
             print_output('*')
             sleep(1)
@@ -148,7 +148,7 @@ def ref_fx_cmd_proc(cmd, fx):
     input_cmd_dict['code_cmd'] = sent
     current_ts = datetime.now().strftime('%G-%b-%d %H:%M:%S')
     schema_check = False
-    try: #to load the cmd using the marshmallow schema defined above
+    try: #to load the cmd using the main marshmallow schema defined in tp_chema.py
         if setval_request and fx.__name__ == "send_cmd":
             validate_val(cmd_wo_setval, input_cmd_dict['code_cmd'], input_cmd_dict['setval']) #validate the setval and code_cmd
         tpcmd_schema.load(input_cmd_dict) # if setval; check second time with real data
@@ -161,7 +161,7 @@ def ref_fx_cmd_proc(cmd, fx):
     if schema_check:
         with tpdb(db_filepath) as db:
             db.execute("DELETE FROM CMDRESPONSE")
-            db.execute(f"INSERT INTO CMDRESPONSE VALUES ('{current_ts}', '{sent}', '{code_cmd}', '{response}')")
+            db.execute(f"INSERT INTO CMDRESPONSE VALUES ('{current_ts}', '{cmd}', '{sent}', '{response}')")
         output = f'func: {ref_fx_cmd_proc.__name__}', f'sent: {cmd}', f'code_cmd: {sent}' ,f"resp: {response}"
         if 'interp' in input_cmd_dict.keys():
             output + (f'interpreatation: {input_cmd_dict["interp"]}',)
@@ -170,7 +170,7 @@ def ref_fx_cmd_proc(cmd, fx):
     return schema_check, input_cmd_dict
 
 def abort_if_invalid(input_str):
-    msg = "The command, '{}', its reponse or the set parameters were not in a valid format".format(input_str)
+    msg = "The command, '{}', its response or the set parameters were not in a valid format".format(input_str)
     abort(404, error=msg)
     handle_logs(('error', msg))
 #}}}

@@ -11,16 +11,18 @@ class tp_wbsrv_upd(Resource):
     def put(self, cmd):
         current_ts = datetime.now().strftime('%G-%b-%d %H:%M:%S')
         input_cmd_dict = {'cmd' : cmd, \
-                          'resp' : request.form['resp'], \
                           'code_cmd' : request.form['code_cmd']}
         schema_check = False
         if request.form.get('setval', False):
             tpsetcmd_schema = tp_ser_check_setcmd_schema()
             try:
-                tpsetcmd_schema.load({'cmd_' : cmd})
-                validate_val(cmd, input_cmd_dict['code_cmd'], request.form['setval'])
+                tpsetcmd_schema.load({'cmd_' : cmd}) #check if set_d -type of command
+                validate_val(cmd, input_cmd_dict['code_cmd'], request.form['setval']) #check if the code_cmd is valid
+                validate_val(cmd, request.form['resp'], request.form['setval']) #check if the response string is valid
+                input_cmd_dict['resp'] = "01,ACK,#" #temporarily set to a valid response to parse in marshmallow schema
                 input_cmd_dict['setval'] = request.form['setval']
-                tpcmd_schema.load(input_cmd_dict) #load in main schema to check ranges of setcmd
+                tpcmd_schema.load(input_cmd_dict) #load in main schema to check ranges of setval; with fake response since it will complain if it is a set cmd (won't match up with the fixed list)
+                input_cmd_dict['resp'] = request.form['resp'] #overwrite the response to the real one
                 schema_check = True
             except ValidationError as err:
                 pprint(err.messages)
@@ -32,6 +34,7 @@ class tp_wbsrv_upd(Resource):
                 raise ValidationError(msg)
                 handle_logs(msg)
             try: #to load the cmd using the marshmallow schema defined above
+                input_cmd_dict['resp'] = request.form['resp']
                 tpcmd_schema.load(input_cmd_dict)
                 schema_check = True
             except ValidationError as err:
