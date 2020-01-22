@@ -11,7 +11,6 @@ api = Api(app)
 picam = Camera()
 
 #{{{ ETAPE SENSOR
-
 class waste_check_5L_carboy(Resource):
     def get(self):
         small_carboy_logs = create_logger('small_5L_carboy')
@@ -38,9 +37,14 @@ class record_video_stream(Resource):
         vid_status['trigger'] = request.form['trigger']
         vid_status['time'] = request.form['time']
         vid_status['wrkflow_name'] = request.form['wrkflow_name']
+        data_dict = {'video_recorded' : 'ERROR'}
         if vid_status['trigger'] == 'on' and validate_trigger_cmd():
-            fp = record_video(vid_status['time'], vid_status['wrkflow_name'])
-            return {'video_recorded' : fp}, 201
+            # fp = record_video(vid_status['time'], vid_status['wrkflow_name'])
+            extra_info = f" trigger:{vid_status['trigger']}, time:{vid_status['time']}, workflow:{vid_status['wrkflow_name']}"
+            data_dict['video_recorded'] = extra_info
+            return data_dict, 201
+        else:
+            abort_if_invalid(data_dict)
 
 
 @app.route('/')
@@ -217,7 +221,7 @@ api.add_resource(tp_ser_wbsrv_cmds, '/tp_ser_wbsrv/cmds') #get list of valid com
 #{{{ ETAPE SENSOR API SOURCE
 api.add_resource(waste_check_5L_carboy, '/waste_check_wbsrv/api/5L')
 api.add_resource(waste_check_20L_carboy, '/waste_check_wbsrv/api/20L')
-api.add_resource(record_video_stream, '/record')
+api.add_resource(record_video_stream, '/tp_ser_wbsrv/record_video') #start video recording
 #}}}
 
 signal.signal(signal.SIGINT, signal_handler)

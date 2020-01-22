@@ -186,7 +186,7 @@ def abort_if_invalid(input_str_dict):
             msg += f'({k}:{v})'
         else:
             msg += f' ({k}:{v})'
-    msg += f" - The response or the set parameters were not in a valid format"
+    msg += f" - The response or the data parameters were not in a valid format"
     abort(404, error=msg)
     handle_logs(('error', msg))
 #}}}

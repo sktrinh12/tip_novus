@@ -14,7 +14,7 @@ import re
 available_word_cmds = list(send_cmd_dict.keys())
 available_word_cmds = available_word_cmds + \
                 [f'update/{cmds}' for cmds in available_word_cmds] + \
-                ['connect','disconnect','response', 'cmds']
+                ['connect','disconnect','response', 'cmds', 'record_video']
 
 available_code_cmds = [v[0] for v in send_cmd_dict.values()]
 description = '''
@@ -55,6 +55,8 @@ parser.add_argument('-cr', '--code_resp', nargs='*',
                     help='The raw code command and the response to update the SQL3 database')
 parser.add_argument('-sv', '--setval', nargs='?', type=setval_check, metavar='',
                      help='The value to set for the dryer compartment, i.e. time;20 or temp;50')
+parser.add_argument('-vd', '--video', nargs='*', metavar='',
+                    help='Set three parameters to start a video recording, (on, time, workflow name)')
 
 args = parser.parse_args()
 
@@ -64,11 +66,18 @@ def set_url_endpoint(endpoint, request_type):
     if request_type == "get":
         response = requests.get(url=url)
     elif request_type == "put":
-        data = dict(
-            setval=args.setval,
-            code_cmd=args.code_resp[0],
-            resp=args.code_resp[1]
-        )
+        if args.video:
+            data = dict(
+                trigger=args.video[0],
+                time=args.video[1],
+                wrkflow_name=args.video[2]
+            )
+        else:
+            data = dict(
+                setval=args.setval,
+                code_cmd=args.code_resp[0],
+                resp=args.code_resp[1]
+            )
         # print(data)
         response = requests.put(url=url, data=data)
     return response

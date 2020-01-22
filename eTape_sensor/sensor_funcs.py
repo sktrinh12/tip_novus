@@ -21,6 +21,7 @@ vid_status = {}
 def validate_trigger_cmd():
     check_trigger = vid_status['trigger'] in ['on', 'off']
     check_time = vid_status['time'].isdigit()
+    check_time = int(vid_status['time']) > 0
     check_workflow = 'workflow' in vid_status['wrkflow_name'].lower()
     return all([item == True for item in [check_trigger, check_time, check_workflow]])
 
