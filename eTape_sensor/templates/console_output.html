@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Flask TipNovus Script Output</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="icon" href="data:;base64,="> <!-- NEGATE THE FAVICON ERROR -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static',
+   filename='output_jscript.js') }}"></script>
+</head>
+
+<style>
+
+
+#console_output{
+border: solid;
+border-width: 2px;
+padding: 15px;
+font: 20px sans-serif;
+width: 55%;
+height: 500px;
+overflow: scroll;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+width: 12px;
+height: 12px;
+}
+
+::-webkit-scrollbar-track {
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: #88ba1c;  
+}
+</style>
+
+<body>
+  <h1>TipNovus Script Output</h1>
+  <div class='panel panel-default'>
+    <div class='panel-body'>
+      <div id='console_output'>
+
+      </div>
+  </div>
+</div>
+</body>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Flask Webcam Streaming App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="icon" href="data:;base64,="> <!-- NEGATE THE FAVICON ERROR -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='jscripts.js') }}"></script>
+</head>
+
+<style>
+  .btn-group {
+    cursor: pointer;
+    display: block;
+    padding:20px;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    margin:10px;
+    width: 120px;
+    height: 70px;
+  }
+  .btn-group:hover {
+    background-color: #0066cc; 
+  }
+
+  div#video_stream {
+    margin : 0 auto ; 
+    width : 696px;
+    height : 464px;
+    text-align : center;
+    display : flex;
+    justify-content : center;
+    align-items : center;
+    border-style : solid;
+    border-width : 2px;
+  }
+
+  div#video_stream,
+  div#overlay {
+    display : none;
+    width : 696px;
+    height : 464px;
+    position : absolute;
+    top : 0;
+    left : 0;
+  }
+
+  div#overlay {
+    z-index: 10;
+  }
+
+</style>
+
+<body>
+  <h1>RPi Video Streaming</h1>
+  <div class='panel panel-default'>
+    <div class='panel-body'> 
+      <table> 
+
+      <tr>
+
+        <td>
+          <div class="container">
+
+            <div id="overlay">
+              <h4>
+                <font color='#2152bd'>
+                    <strong>No video currently streaming...</strong>
+                </font>
+                </h4>
+            </div>
+
+            <div id="video_stream">
+              <img src="{{ url_for('video_feed') }}" width="100%"> 
+            </div>
+
+          </div>
+        </td> 
+
+        <td>
+
+          <div>
+            <!-- <form method="post" id="form"> -->
+              <button class="btn-group" id="start_btn">
+                Start 
+              </button>
+              <br>
+              <button class="btn-group" id="stop_btn">
+                Stop 
+              </button>
+            <!-- </form> -->
+          </div>
+
+        </td>
+
+      </tr>    
+
+    </table>
+    </div>
+  </div>
+</body>
