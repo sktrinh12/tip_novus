@@ -3,7 +3,7 @@ import serial
 from logging_decor import *
 from time import sleep
 
-@logit(logger)
+@logit(tipnovus_logger)
 def handle_logs(*args):
     print(*args)
 
@@ -40,9 +40,9 @@ WA = 'WA'
 DR = 'DR'
 send_cmd_dict = {
     #key = command name, val1 = ascii command, val2 = time delay
-    'connect' : [FC(TP, '@').util_cmds, FC.to_secs(0.01)],
-    'ack' : [FC(TP, 'ACK,1').util_cmds, FC.to_secs(0.01)],
-    'nak' : [FC(TP, 'NAK,@').util_cmds, FC.to_secs(0.01)],
+    'connect' : [FC(TP, '@').util_cmds, FC.to_secs(0.016)],
+    'ack' : [FC(TP, 'ACK,1').util_cmds, FC.to_secs(0.016)],
+    'nak' : [FC(TP, 'NAK,@').util_cmds, FC.to_secs(0.016)],
     'opendoor_washer' : [FC(TP, WA, 'OD').run_cmds, FC.to_secs(0.04)],
     'closedoor_washer' : [FC(TP, WA, 'CD').run_cmds, FC.to_secs(0.04)],
     'opendoor_dryer' : [FC(TP, DR, 'OD').run_cmds, FC.to_secs(0.04)],
@@ -51,20 +51,20 @@ send_cmd_dict = {
     'custom2_proc' : [FC(TP, WA, 'S2').run_cmds, FC.to_secs(0.05)],
     'self_clean' : [FC(TP, WA, 'CL').run_cmds, FC.to_secs(0.32)],
     'check_sensor' : [FC(TP, WA, 'SC').run_cmds, FC.to_secs(1.01)],
-    'waste_drain' : [FC(TP, WA, 'WD').run_cmds, FC.to_secs(0.03)],
-    'dply_wash' : [FC(TP, WA, 'WS').run_cmds, FC.to_secs(0.01)],
-    'dply_dryer' : [FC(TP, DR, 'DS').run_cmds, FC.to_secs(0.01)],
-    'abort_dryer' : [FC(TP, DR, 'AD').run_cmds, FC.to_secs(0.01)],
-    'abort_wash' : [FC(TP, DR, 'AW').run_cmds, FC.to_secs(0.01)],
-    'get_dtemp' : [FC(TP, DR, 'CT').run_cmds, FC.to_secs(0.01)],
+    'waste_drain' : [FC(TP, WA, 'WD').run_cmds, FC.to_secs(0.035)],
+    'dply_wash' : [FC(TP, WA, 'WS').run_cmds, FC.to_secs(0.018)],
+    'dply_dryer' : [FC(TP, DR, 'DS').run_cmds, FC.to_secs(0.018)],
+    'abort_dryer' : [FC(TP, DR, 'AD').run_cmds, FC.to_secs(0.018)],
+    'abort_wash' : [FC(TP, DR, 'AW').run_cmds, FC.to_secs(0.018)],
+    'get_dtemp' : [FC(TP, DR, 'CT').run_cmds, FC.to_secs(0.018)],
     'primeA' : [FC(TP, WA, 'PA').run_cmds, FC.to_secs(0.04)],
     'primeDI' : [FC(TP, WA, 'PD').run_cmds, FC.to_secs(0.04)],
     'set_dtime' : [FC(TP, DR, 'TM').setparam(10), FC.to_secs(0.02)],
     'set_dtemp' : [FC(TP, DR, 'MT').setparam(50), FC.to_secs(0.02)],
-    'discon_resp' : [FC(TP, 'ACK,@').util_cmds, FC.to_secs(0.01)],
-    'ack2' : [FC(TP, 'ACK').util_cmds, FC.to_secs(0.01)],
-    'ack3' : [FC(TP, 'ACK,00').util_cmds, FC.to_secs(0.01)],
-    'un_op' : [FC(TP, 'ACK,0').util_cmds, FC.to_secs(0.01)]
+    'discon_resp' : [FC(TP, 'ACK,@').util_cmds, FC.to_secs(0.016)],
+    'ack2' : [FC(TP, 'ACK').util_cmds, FC.to_secs(0.016)],
+    'ack3' : [FC(TP, 'ACK,00').util_cmds, FC.to_secs(0.016)],
+    'un_op' : [FC(TP, 'ACK,0').util_cmds, FC.to_secs(0.016)]
         }
 #}}}
 

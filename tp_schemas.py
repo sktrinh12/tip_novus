@@ -26,7 +26,7 @@ class tp_ser_cmd_schema(Schema):
     @validates('cmd')
     def validate_cmd(self, cmd):
         if cmd not in send_cmd_dict.keys():
-            msg = f"Invalid command string -> '{cmd}'"
+            msg = f"fi:{__file__}_cls:{__class__}_fx:{__name__}:: Invalid command string -> '{cmd}'"
             raise ValidationError(msg)
             handle_logs(('error', msg))
 
@@ -37,7 +37,7 @@ class tp_ser_cmd_schema(Schema):
             time_m = '([1-9]|[1-9][0-9]|100)#'
             temp_m = '([2-6][0-9]|70)#'
             if not any(re.search(rgs, code_cmd) for rgs in [re_match.format('TM', time_m), re_match.format('MT', temp_m)]):
-                msg = f"Invalid code command string -> '{code_cmd}'"
+                msg = f"fi:{__file__}_cls:{__class__}_fx:{__name__}:: Invalid code command string -> '{code_cmd}'"
                 raise ValidationError(msg)
                 handle_logs(('error', msg))
 
@@ -47,28 +47,28 @@ class tp_ser_cmd_schema(Schema):
             typeof, val = setval.split(';')
             if typeof == 'time':
                 if not val.isdigit():
-                    msg = f'Incorrect value to set time parameter -> {val}'
+                    msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Incorrect value to set time parameter -> {val}'
                     raise ValidationError(msg)
                     handle_logs(('error', msg))
                 if int(val) < 1 or int(val) > 100:
-                    msg = f'Incorrect range for setting time; >1 and <100 -> {val}'
+                    msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Incorrect range for setting time; >1 and <100 -> {val}'
                     raise ValidationError(msg)
                     handle_logs(f('error', msg))
             elif typeof == 'temp':
                 if not val.isdigit():
-                    msg = f'Incorrect value to set temp parameter -> {val}'
+                    msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Incorrect value to set temp parameter -> {val}'
                     raise ValidationError(msg)
                     handle_logs(('error', msg))
                 if int(val) < 20 or int(val) > 70:
-                    msg = f'Incorrect range for setting temperature; >20 and <70 -> {val}'
+                    msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Incorrect range for setting temperature; >20 and <70 -> {val}'
                     raise ValidationError(msg)
                     handle_logs(('error', msg))
             else:
-                msg = f"Invalid command string; can only set 'temp' or 'time' -> {val}"
+                msg = f"fi:{__file__}_cls:{__class__}_fx:{__name__}:: Invalid command string; can only set 'temp' or 'time' -> {val}"
                 raise ValidationError(msg)
                 handle_logs(('error', msg))
         else:
-            msg = f"Improper string format, requires ';' -> {setval}"
+            msg = f"fi:{__file__}_cls:{__class__}_fx:{__name__}:: Improper string format, requires ';' -> {setval}"
             raise ValidationError(msg)
             handle_logs(('error', msg))
 
@@ -76,8 +76,8 @@ class tp_ser_cmd_schema(Schema):
     def validate_resp(self, resp):
         if resp not in [a[0] for a in send_cmd_dict.values()]:
             # if not a dryer time remaining resp or check_sensor response
-            if not re.search('01,ACK,\d{1,4},#', resp) or not re.search('[01]{7}',resp):
-                msg = f'Invalid response string -> {resp}'
+            if not re.search('01,ACK,\d{1,4},#', resp) and not re.search('[0|1]{7}',resp):
+                msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Invalid response string -> {resp}'
                 handle_logs(('error', msg))
                 raise ValidationError(msg)
 #}}}
@@ -91,7 +91,7 @@ def validate_val(cmd, code_cmd, setval):
             handle_logs(('error', msg))
             raise ValidationError(msg)
         if code_cmd not in [a[0] for a in send_cmd_dict.values()]:
-            if not re.search(f'(01,TI,DR,TM,{val})', code_cmd):
+            if not re.search(f'(01,TI,DR,TM,{val}#)', code_cmd):
                 msg = f'The setval and code_cmd string do not accord with each other -> {setval} & {code_cmd}'
                 handle_logs(('error', msg))
                 raise ValidationError(msg)
@@ -101,7 +101,7 @@ def validate_val(cmd, code_cmd, setval):
             handle_logs(('error', msg))
             raise ValidationError(msg)
         if code_cmd not in [a[0] for a in send_cmd_dict.values()]:
-            if not re.search(f'(01,TI,DR,MT,{val})', code_cmd):
+            if not re.search(f'(01,TI,DR,MT,{val}#)', code_cmd):
                 msg = f'The setval and code_cmd string do not accord with each other -> {setval} & {code_cmd}'
                 handle_logs(('error', msg))
                 raise ValidationError(msg)

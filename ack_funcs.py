@@ -1,4 +1,4 @@
-from logging_decor import logger
+from logging_decor import tipnovus_logger
 
 status_codes = {
     '11' : 'SUB-PROTOCOL STARTED',
@@ -72,7 +72,7 @@ def error_msg_handle(split_str_resp):
         print_output(f"error code: {cd1}{cd2} {msg_1} {msg_2}")
         return code1, code2, codemsg_1, codemsg_2
     except Exception as e:
-        logger.critical(f"no code string found > {str(e)}")
+        tipnovus_logger.critical(f"no code string found > {str(e)}")
         return None, None, None, None
 
 def dply_cmds(sub_response_str):
@@ -116,7 +116,7 @@ def sensor_check(sub_response_str):
         else:
             return bad_sensor
     except Exception as e:
-        print_output(f"""a problem occured parsing the sensor check repsonse string - {str(e)}""")
+        print_output(f"a problem occured parsing the sensor check repsonse string - {str(e)}")
 
 def split_resp(str_response):
     try:

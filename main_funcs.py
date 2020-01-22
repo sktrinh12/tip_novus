@@ -3,11 +3,14 @@ from tipnovus_class_api import *
 from ack_funcs import *
 from rest_sql3_class import *
 from tipnovus_class_api import *
+from marshmallow import ValidationError, pprint
+from tp_schemas import tp_ser_cmd_schema
 
-
+tpcmd_schema = tp_ser_cmd_schema()
+tp_ser = None
 #{{{ MAIN FUNCTIONS
 
-@logit(logger)
+@logit(tipnovus_logger)
 def handle_logs(*args):
     return
 
@@ -22,12 +25,12 @@ def send_cmd(cmd):
         srch = f'{tp.code_command[:12]}'
         if re.search(srch + '\d{1,2}#', str_response):
             print_output(f"resp: {str_response} (SUCCESS)")
-    output = f'func: {send_cmd.__name__}', f'sent: {tp.code_command}', f'resp: {str_response}'
+    output = f'func: {__name__}', f'sent: {tp.code_command}', f'resp: {str_response}'
     #print(output)
     handle_logs(output)
     return tp.code_command, str_response
 
-def ack_cmd(cmd):
+def ack_cmd(cmd_):
     cmd = tipnovus(cmd_) #just to print out '*' for long delays
     status_code_dict = {'ack' : ''}
     ack = tipnovus('ack')
@@ -39,7 +42,7 @@ def ack_cmd(cmd):
             if i % 8 == 0:
                 output = f'~{cmd.buffer_wait_time - i} secs left'
                 print_output(output)
-                logger.debug(output)
+                tipnovus_logger.debug(output)
     else:
         sleep(cmd.buffer_wait_time)
     str_response = tp_ser.read_resp
@@ -50,7 +53,7 @@ def ack_cmd(cmd):
         status_code_dict['status'] = f'{cd1}{cd2} {msg1}{msg2}'
         status_code_dict['interp'] = 'critical error during run'
     if not spr:
-        output = f"No response string to parse from the ping cmd: {cmd_}"
+        output = f"{__file__}_{__name__}: No response string to parse from the ping cmd: {cmd_}"
         handle_logs(('error', output))
         print_output(output)
     else:
@@ -78,6 +81,12 @@ def ack_cmd(cmd):
             status_code_dict['interp'] = 'sensors passed!'
     return status_code_dict, str_response
 
+def check_conn():
+    res = tp_ser.is_connected
+    print_output(res)
+    output = f'{__file__}_{__name__}: connected? = {res}'
+    handle_logs(output)
+    return res
 
 def connect_tp():
     global tp_ser
@@ -114,11 +123,11 @@ def disconnect_tp():
 
 #{{{ SCHEMA RELATED FUNCTIONS
 def update_data(current_ts, cmd, code_cmd, resp):
-    with tpdb(db_filepath) as db:
+    with tpdb(tp_db_filepath) as db:
         db.execute("DELETE FROM CMDRESPONSE")
         db.execute(f"INSERT INTO CMDRESPONSE VALUES ('{current_ts}', '{cmd}', '{code_cmd}', '{resp}')")
-        output = f'ts: {current_ts}', f'cmd: {cmd}', f'code_cmd: {code_cmd}', f'resp: {resp}'
-        handle_logs(output)
+#        output = f'ts: {current_ts}', f'cmd: {cmd}', f'code_cmd: {code_cmd}', f'resp: {resp}'
+#        handle_logs(output)
         return {'timestamp' : current_ts , 'cmd' : cmd, 'code_cmd' : code_cmd, 'response' : resp}
 
 
@@ -156,21 +165,28 @@ def ref_fx_cmd_proc(cmd, fx):
     except ValidationError as err:
         pprint(err.messages)
         pprint(err.valid_data)
-        handle_logs(err.messages)
+        #handle_logs(err.messages)
 
     if schema_check:
-        with tpdb(db_filepath) as db:
+        with tpdb(tp_db_filepath) as db:
             db.execute("DELETE FROM CMDRESPONSE")
             db.execute(f"INSERT INTO CMDRESPONSE VALUES ('{current_ts}', '{cmd}', '{sent}', '{response}')")
-        output = f'func: {ref_fx_cmd_proc.__name__}', f'sent: {cmd}', f'code_cmd: {sent}' ,f"resp: {response}"
+        output = f'fi:{__file__}_fx:{ref_fx_cmd_proc.__name__}', f'cmd: {cmd}', f'code_cmd: {sent}' ,f"resp: {response}"
         if 'interp' in input_cmd_dict.keys():
-            output + (f'interpreatation: {input_cmd_dict["interp"]}',)
+            output = output + (f'interpreatation: {input_cmd_dict["interp"]}',)
         handle_logs(output)
         input_cmd_dict['resp'] = response
     return schema_check, input_cmd_dict
 
-def abort_if_invalid(input_str):
-    msg = "The command, '{}', its response or the set parameters were not in a valid format".format(input_str)
+def abort_if_invalid(input_str_dict):
+    msg = ''
+    print(input_str_dict)
+    for i,(k,v) in enumerate(input_str_dict.items()):
+        if i == 0:
+            msg += f'({k}:{v})'
+        else:
+            msg += f' ({k}:{v})'
+    msg += f" - The response or the set parameters were not in a valid format"
     abort(404, error=msg)
     handle_logs(('error', msg))
 #}}}
