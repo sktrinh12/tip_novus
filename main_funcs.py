@@ -22,7 +22,7 @@ def send_cmd(cmd):
     if str_response == tp.code_command:
         print_output(f"resp: {str_response} (SUCCESS)")
     if cmd.startswith('set_'):
-        srch = f'{tp.code_command[:12]}'
+        srch = f'{tp.code_command[:12]}' #substring up to the default value within the tipnovus cmd class
         if re.search(srch + '\d{1,2}#', str_response):
             print_output(f"resp: {str_response} (SUCCESS)")
     output = f'func: {__name__}', f'sent: {tp.code_command}', f'resp: {str_response}'
@@ -84,7 +84,7 @@ def ack_cmd(cmd_):
 def check_conn():
     res = tp_ser.is_connected
     print_output(res)
-    output = f'{__file__}_{__name__}: connected? = {res}'
+    output = f'{__file__}_{__name__}: check if connected = {res}'
     handle_logs(output)
     return res
 
@@ -98,6 +98,7 @@ def connect_tp():
     # print(str_response)
     if str_response == tp.code_command:
         print_output(f"resp: {str_response} (SUCCESS)")
+
     output = f'func: {connect_tp.__name__}', f'sent: {tp.code_command}', f'resp: {str_response}'
     # print(output)
     handle_logs(output)
@@ -133,18 +134,18 @@ def update_data(current_ts, cmd, code_cmd, resp):
 
 def ref_fx_cmd_proc(cmd, fx):
     setval_request = request.form.get('setval', False)
-    input_cmd_dict = {'code_cmd' : '', 'cmd' : cmd, 'resp' : ''} # initialise
+    input_cmd_dict = {'code_cmd' : '', 'cmd' : cmd, 'response' : ''} # initialise
     if setval_request and fx.__name__ == "send_cmd":
         tpsetcmd_schema = tp_ser_check_setcmd_schema() # checks if it is a set_d type cmd
         tpsetcmd_schema.load({'cmd_' : cmd})
         # temporarily fudge the resp/code_cmd to just check/validate the setval entry
-        input_cmd_dict['code_cmd'] = input_cmd_dict['resp'] = "01,ACK,#"
+        input_cmd_dict['code_cmd'] = input_cmd_dict['response'] = "01,ACK,#"
         input_cmd_dict['setval'] = setval_request
         cmd_wo_setval = cmd
         tpcmd_schema.load(input_cmd_dict) # actually only checking the setval
         cmd = cmd + setval_request.split(';')[1] #concatenate the cmd to update it with the setval
     data, response = fx(cmd) #ack or send, sent is the code cmd and cmd is the human readable cmd
-    input_cmd_dict['resp'] = response
+    input_cmd_dict['response'] = response
     if isinstance(data, dict): #an ack cmd returns a dict
         sent = data['ack']
         if len(data.keys()) > 2: #washer status code response 3-4 digits with interpretation
@@ -171,22 +172,19 @@ def ref_fx_cmd_proc(cmd, fx):
         with tpdb(tp_db_filepath) as db:
             db.execute("DELETE FROM CMDRESPONSE")
             db.execute(f"INSERT INTO CMDRESPONSE VALUES ('{current_ts}', '{cmd}', '{sent}', '{response}')")
-        output = f'fi:{__file__}_fx:{ref_fx_cmd_proc.__name__}', f'cmd: {cmd}', f'code_cmd: {sent}' ,f"resp: {response}"
+        output = f'fi:{__file__}_fx:{ref_fx_cmd_proc.__name__}', f'cmd: {cmd}', f'code_cmd: {sent}' ,f"response: {response}"
         if 'interp' in input_cmd_dict.keys():
             output = output + (f'interpreatation: {input_cmd_dict["interp"]}',)
         handle_logs(output)
-        input_cmd_dict['resp'] = response
+        input_cmd_dict['response'] = response
     return schema_check, input_cmd_dict
 
 def abort_if_invalid(input_str_dict):
-    msg = ''
-    print(input_str_dict)
+    msg = ' '
+    # print(input_str_dict)
     for i,(k,v) in enumerate(input_str_dict.items()):
-        if i == 0:
-            msg += f'({k}:{v})'
-        else:
-            msg += f' ({k}:{v})'
-    msg += f" - The response or the data parameters were not in a valid format"
+        msg += f' ({k}:{v})'
+    msg += f" - The response or the data parameters were not valid"
     abort(404, error=msg)
     handle_logs(('error', msg))
 #}}}

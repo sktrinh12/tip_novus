@@ -6,11 +6,11 @@ import sys
 import os
 from eTape_sensor.hardware_config import *
 from datetime import datetime
-import string
-import sqlite3
-from sqlite3 import Error
-from rest_sql3_class import instance_dir
-from random import choice
+# import string
+#import sqlite3
+#from sqlite3 import Error
+from rest_sql3_class import instance_dir, vid_db_filepath
+# from random import choice
 sys.path.insert(1, instance_dir)
 from logging_decor import create_logger
 
@@ -20,8 +20,7 @@ vid_status = {}
 
 def validate_trigger_cmd():
     check_trigger = vid_status['trigger'] in ['on', 'off']
-    check_time = vid_status['time'].isdigit()
-    check_time = int(vid_status['time']) > 0
+    check_time = vid_status['time'].isdigit() and int(vid_status['time']) > 0
     check_workflow = 'workflow' in vid_status['wrkflow_name'].lower()
     return all([item == True for item in [check_trigger, check_time, check_workflow]])
 
@@ -33,42 +32,45 @@ def bkg_etape(thread_event):
 def record_video(record_time, wrkflw):
     with picamera.PiCamera() as camera:
         camera.resolution = (640, 480)
-        unq_id = gen_unq_id(12)
+        # unq_id = gen_unq_id(12)
         record_time = int(record_time)
         current_time = datetime.now()
         time_iso_format = current_time.isoformat()
         ts_file = current_time.strftime('%G-%b-%dT%H_%M_%S')
-        file_path = f'{file_path}{ts_file}_{unq_id}.h264'
+        file_path = f'{file_path}{ts_file}_{wrkflw}.h264'
         camera.start_recording(file_path, quality=10)
         camera.wait_recording(record_time)
         camera.stop_recording()
-    conn = create_connection(db_path)
-    with conn:
-        items = (current_time, unq_id, wrkflw)
-        insert_items(conn, items)
-    conn.commit()
+    # conn = create_connection(db_path)
+    # with conn:
+    #     items = (current_time, unq_id, wrkflw)
+    #     insert_items(conn, items)
+    # conn.commit()
+    with tpdb(vid_db_filepath) as db:
+        db.execute("DELETE FROM VIDIDS")
+        db.execute(f"INSERT INTO VIDIDS VALUES ('{current_time}', '{file_path}{ts_file}', '{wrkflow})'")
     return file_path
 
 
-def gen_unq_id(size, chars=string.ascii_letters + string.digits):
-    return ''.join(choice(chars) for x in range(size))
+# def gen_unq_id(size, chars=string.ascii_letters + string.digits):
+#     return ''.join(choice(chars) for x in range(size))
 
-def create_connection(db_file):
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-    except Error as e:
-        print(e)
-    return conn
+# def create_connection(db_file):
+#     conn = None
+#     try:
+#         conn = sqlite3.connect(db_file)
+#     except Error as e:
+#         print(e)
+#     return conn
 
-def insert_items(conn, items):
-    sql = f'''INSERT INTO vidids VALUES (?,?,?)'''
-    cur = conn.cursor()
-    cur.execute(sql, items)
-    return cur.lastrowid
+# def insert_items(conn, items):
+#     sql = f'''INSERT INTO vidids VALUES (?,?,?)'''
+#     cur = conn.cursor()
+#     cur.execute(sql, items)
+#     return cur.lastrowid
 
-def get_date():
-    return str(datetime.today().strftime('%G-%d-%b'))
+# def get_date():
+#     return str(datetime.today().strftime('%G-%d-%b'))
 
 #def setup_logger(name, log_file, level = logging.INFO):
 #    handler = logging.FileHandler(log_file, mode='+a')
@@ -77,7 +79,7 @@ def get_date():
 #    logger.setLevel(level)
 #    logger.addHandler(handler)
 #    return logger
-#
+
 def check_voltage(carboy_size, logs):
       chan = channels_dict[f'{carboy_size}']
       if carboy_size == 'small':
