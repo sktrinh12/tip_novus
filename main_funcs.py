@@ -174,7 +174,7 @@ def ref_fx_cmd_proc(cmd, fx):
             db.execute(f"INSERT INTO CMDRESPONSE VALUES ('{current_ts}', '{cmd}', '{sent}', '{response}')")
         output = f'fi:{__file__}_fx:{ref_fx_cmd_proc.__name__}', f'cmd: {cmd}', f'code_cmd: {sent}' ,f"response: {response}"
         if 'interp' in input_cmd_dict.keys():
-            output = output + (f'interpreatation: {input_cmd_dict["interp"]}',)
+            output = output + (f'interpretation: {input_cmd_dict["interp"]}',)
         handle_logs(output)
         input_cmd_dict['response'] = response
     return schema_check, input_cmd_dict
@@ -183,7 +183,7 @@ def abort_if_invalid(input_str_dict):
     msg = ' '
     # print(input_str_dict)
     for i,(k,v) in enumerate(input_str_dict.items()):
-        msg += f' ({k}:{v})'
+        msg += f'({k}:{v})'
     msg += f" - The response or the data parameters were not valid"
     abort(404, error=msg)
     handle_logs(('error', msg))

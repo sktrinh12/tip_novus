@@ -56,21 +56,21 @@ def gen(camera):
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-@app.route('/start')
+@app.route('/tp_ser_wbsrv/video_feed/start')
 def start():
     global picam
     picam.start()
     btn_res = request.args.get('btn_type')
     return jsonify({'btn' : btn_res})
 
-@app.route('/stop')
+@app.route('/tp_ser_wbsrv/video_feed/stop')
 def stop():
     global picam
     picam.stop()
     btn_res = request.args.get('btn_type')
     return jsonify({'btn' : btn_res})
 
-@app.route('/video_feed')
+@app.route('tp/ser_wbsrv/video_feed/raw_feed')
 def video_feed():
     return Response(gen(picam), mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -83,13 +83,13 @@ def output_test():
             yield f"data:{x}\n\n"
     return Response(inner(), mimetype = 'text/event-stream')
 
-@app.route('/console_output')
-def console_output():
-    def inner_co():
-        main()
-    return Response(inner_co(), mimetype='text/event-stream')
+#@app.route('/console_output')
+#def console_output():
+#    def inner_co():
+#        #main() was the tipnovus_api_v3.py fx
+#    return Response(inner_co(), mimetype='text/event-stream')
 
-@app.route('/dply_output')
+@app.route('/tp_ser_wbsrv/display_std_output')
 def dply_output():
     return render_template('console_output.html' )
 
@@ -108,11 +108,11 @@ class tp_wbsrv_upd(Resource):
             try:
                 tpsetcmd_schema.load({'cmd_' : cmd}) #check if set_d -type of command
                 validate_val(cmd, input_cmd_dict['code_cmd'], request.form['setval']) #check if the code_cmd is valid
-                validate_val(cmd, request.form['resp'], request.form['setval']) #check if the response string is valid
-                input_cmd_dict['resp'] = "01,ACK,#" #temporarily set to a valid response to parse in marshmallow schema
+                validate_val(cmd, request.form['response'], request.form['setval']) #check if the response string is valid
+                input_cmd_dict['response'] = "01,ACK,#" #temporarily set to a valid response to parse in marshmallow schema
                 input_cmd_dict['setval'] = request.form['setval']
                 tpcmd_schema.load(input_cmd_dict) #load in main schema to check ranges of setval; with fake response since it will complain if it is a set cmd (won't match up with the fixed list)
-                input_cmd_dict['resp'] = request.form['resp'] #overwrite the response to the real one
+                input_cmd_dict['response'] = request.form['response'] #overwrite the response to the real one
                 schema_check = True
             except ValidationError as err:
                 pprint(err.messages)
@@ -124,7 +124,7 @@ class tp_wbsrv_upd(Resource):
                 raise ValidationError(msg)
                 handle_logs(msg)
             try: #to load the cmd using the marshmallow schema defined above
-                input_cmd_dict['resp'] = request.form['resp']
+                input_cmd_dict['response'] = request.form['response']
                 tpcmd_schema.load(input_cmd_dict)
                 schema_check = True
             except ValidationError as err:
@@ -137,8 +137,8 @@ class tp_wbsrv_upd(Resource):
             if len(input_cmd_dict.keys()) > 3:
                 cmd = cmd + input_cmd_dict['setval'].split(';')[1]
                 print(input_cmd_dict)
-            change = update_data(current_ts, cmd, input_cmd_dict['code_cmd'], input_cmd_dict['resp'])
-            output = f'func: {self.__class__.__name__}_{self.put.__name__}', f'ts: {current_ts}',f'sent: {cmd}', f"resp: {input_cmd_dict['resp']}"
+            change = update_data(current_ts, cmd, input_cmd_dict['code_cmd'], input_cmd_dict['response'])
+            output = f'func: {self.__class__.__name__}_{self.put.__name__}', f'ts: {current_ts}',f'sent: {cmd}', f"response: {input_cmd_dict['response']}"
             handle_logs(output)
             return change, 201
         else:
@@ -152,7 +152,7 @@ class tp_wbsrv_resp(Resource):
     def get(self):
         with tpdb(tp_db_filepath) as db:
             res = db.queryone("SELECT response FROM CMDRESPONSE")
-            output = f'func: {self.__class__.__name__}_{self.get.__name__}', f"resp: {res}"
+            output = f'func: {self.__class__.__name__}_{self.get.__name__}', f"response: {res}"
             handle_logs(output)
             return  {'response' : res}
 
@@ -164,7 +164,7 @@ class tp_ser_wbsrv(Resource):
         if schema_check:
             #then acknowledge
             schema_check, data_dict = ref_fx_cmd_proc(cmd, ack_cmd)
-            if schema_check and data_dict['resp']:
+            if schema_check and data_dict['response']:
                 return data_dict, 201
             else:
                 return data_dict, 502
@@ -180,14 +180,14 @@ class tp_ser_wbsrv_check_con(Resource):
         except AttributeError as e:
             bool_connected = False
         output = f'func: {self.__class__.__name__}_{self.get.__name__}', f'is_connected? =  {bool_connected}'
-        return {'is_connected' : bool_connected}
+        return {'response' : bool_connected}
 
 
 class tp_ser_wbsrv_con(Resource):
     # connect to tip novus
     def get(self):
         s, r = connect_tp()
-        output = f'func: {self.__class__.__name__}_{self.get.__name__}', f'sent: {s}', f"resp: {r}"
+        output = f'func: {self.__class__.__name__}_{self.get.__name__}', f'sent: {s}', f"response: {r}"
         handle_logs(output)
         return {'sent' : s, 'response' : r}
 
@@ -195,7 +195,7 @@ class tp_ser_wbsrv_discon(Resource):
     # disconnect from tip novus
     def get(self):
         s, s2, r = disconnect_tp()
-        output = f'func: {self.__class__.__name__}_{self.get.__name__}', f'sent: {s} {s2}', f"resp: {r}"
+        output = f'func: {self.__class__.__name__}_{self.get.__name__}', f'sent: {s} {s2}', f"response: {r}"
         handle_logs(output)
         return {'sent' : f'{s} {s2}', 'response' : r}
 
@@ -210,7 +210,7 @@ class tp_ser_wbsrv_cmds(Resource):
 api.add_resource(tp_ser_wbsrv_con, '/tp_ser_wbsrv/connect')
 api.add_resource(tp_ser_wbsrv_check_con, '/tp_ser_wbsrv/check_con')
 api.add_resource(tp_ser_wbsrv_discon, '/tp_ser_wbsrv/disconnect')
-api.add_resource(tp_wbsrv_resp, '/tp_ser_wbsrv/response')
+api.add_resource(tp_wbsrv_response, '/tp_ser_wbsrv/response')
 api.add_resource(tp_wbsrv_upd, '/tp_ser_wbsrv/update/<string:cmd>') # change/update the command andrepsonse string 
 api.add_resource(tp_ser_wbsrv, '/tp_ser_wbsrv/<string:cmd>') # issue commands to tp
 api.add_resource(tp_ser_wbsrv_cmds, '/tp_ser_wbsrv/cmds') #get list of valid commands

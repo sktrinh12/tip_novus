@@ -76,7 +76,7 @@ def set_url_endpoint(endpoint, request_type):
             data = dict(
                 setval=args.setval,
                 code_cmd=args.code_resp[0],
-                resp=args.code_resp[1]
+                response=args.code_resp[1]
             )
         # print(data)
         response = requests.put(url=url, data=data)
