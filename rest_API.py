@@ -46,7 +46,7 @@ class record_video_stream(Resource):
             abort_if_invalid(data_dict)
 
 
-@app.route('/')
+@app.route('/tp_ser_wbsrv')
 def index():
     return render_template('index.html')
 
@@ -70,7 +70,7 @@ def stop():
     btn_res = request.args.get('btn_type')
     return jsonify({'btn' : btn_res})
 
-@app.route('tp/ser_wbsrv/video_feed/raw_feed')
+@app.route('tp_ser_wbsrv/video_feed/raw_feed')
 def video_feed():
     return Response(gen(picam), mimetype='multipart/x-mixed-replace; boundary=frame')
 

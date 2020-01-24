@@ -25,7 +25,7 @@ $(document).ready(function() {
       $("#start_btn").click(function(e) {
         e.preventDefault();
         $.when(
-            ajax_call('/start', 
+            ajax_call('/tp_ser_wbsrv/video_feed/start', 
                       contentype_txt, 
                       'json', 
                       {btn_type : $("#start_btn").text().replace(/ /g,'')},
@@ -43,7 +43,7 @@ $(document).ready(function() {
       $("#stop_btn").click(function(e) {
         e.preventDefault();
         $.when(
-            ajax_call('/stop', 
+            ajax_call('/tp_ser_wbsrv/video_feed/stop', 
                       contentype_txt, 
                       'json', 
                       {btn_type : $("#stop_btn").text().replace(/ /g,'')},
