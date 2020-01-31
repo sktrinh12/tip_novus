@@ -70,7 +70,7 @@ def stop():
     btn_res = request.args.get('btn_type')
     return jsonify({'btn' : btn_res})
 
-@app.route('tp_ser_wbsrv/video_feed/raw_feed')
+@app.route('/tp_ser_wbsrv/video_feed/raw_feed')
 def video_feed():
     return Response(gen(picam), mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -147,7 +147,7 @@ class tp_wbsrv_upd(Resource):
             abort_if_invalid(input_cmd_dict)
 
 
-class tp_wbsrv_resp(Resource):
+class tp_ser_wbsrv_response(Resource):
     # get the response
     def get(self):
         with tpdb(tp_db_filepath) as db:
@@ -210,7 +210,7 @@ class tp_ser_wbsrv_cmds(Resource):
 api.add_resource(tp_ser_wbsrv_con, '/tp_ser_wbsrv/connect')
 api.add_resource(tp_ser_wbsrv_check_con, '/tp_ser_wbsrv/check_con')
 api.add_resource(tp_ser_wbsrv_discon, '/tp_ser_wbsrv/disconnect')
-api.add_resource(tp_wbsrv_response, '/tp_ser_wbsrv/response')
+api.add_resource(tp_ser_wbsrv_response, '/tp_ser_wbsrv/response')
 api.add_resource(tp_wbsrv_upd, '/tp_ser_wbsrv/update/<string:cmd>') # change/update the command andrepsonse string 
 api.add_resource(tp_ser_wbsrv, '/tp_ser_wbsrv/<string:cmd>') # issue commands to tp
 api.add_resource(tp_ser_wbsrv_cmds, '/tp_ser_wbsrv/cmds') #get list of valid commands

@@ -1,7 +1,6 @@
 from marshmallow import Schema, fields, pprint, ValidationError, validates#, post_load
 from main_funcs import handle_logs
-from tipnovus_class_api import send_cmd_dict
-import re
+from tipnovus_class_api import send_cmd_dict, re
 
 #{{{ TPSerSetCmdSchema class
 class tp_ser_check_setcmd_schema(Schema):
@@ -17,7 +16,7 @@ class tp_ser_check_setcmd_schema(Schema):
 
 class tp_ser_cmd_schema(Schema):
     cmd = fields.String(required = True)
-    resp = fields.String(required = True)
+    response = fields.String(required = True)
     code_cmd = fields.String(required = True)
     setval = fields.String()
     status = fields.String()
@@ -72,12 +71,12 @@ class tp_ser_cmd_schema(Schema):
             raise ValidationError(msg)
             handle_logs(('error', msg))
 
-    @validates('resp')
-    def validate_resp(self, resp):
-        if resp not in [a[0] for a in send_cmd_dict.values()]:
+    @validates('response')
+    def validate_resp(self, response):
+        if response not in [a[0] for a in send_cmd_dict.values()]:
             # if not a dryer time remaining resp or check_sensor response
-            if not re.search('01,ACK,\d{1,4},#', resp) and not re.search('[0|1]{7}',resp):
-                msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Invalid response string -> {resp}'
+            if not re.search('01,ACK,\d{1,4},#', response) and not re.search('[0|1]{7}',response):
+                msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Invalid response string -> {response}'
                 handle_logs(('error', msg))
                 raise ValidationError(msg)
 #}}}

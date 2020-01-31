@@ -2,6 +2,7 @@ import sys
 import serial
 from logging_decor import *
 from time import sleep
+import re
 
 @logit(tipnovus_logger)
 def handle_logs(*args):
@@ -71,15 +72,29 @@ send_cmd_dict = {
 
 class tipnovus:
     def __init__(self, str_command):
+        def check_setcmd(str_cmd):
+            if re.search('set_dt.*\d{1,3}$', str_cmd):
+                return True
+            else:
+                return False
+        self.check = check_setcmd(str_command)
         if str_command not in send_cmd_dict.keys():
-            raise ValueError('that command does not exist!')
+            if not self.check:
+                raise ValueError('that command does not exist!')
+            else:
+                self.str_command = str_command[:9]
+                self.setval = str_command[10:]
+                self.buffer_wait_time = send_cmd_dict[self.str_command][1]
         else:
             self.str_command = str_command
             self.buffer_wait_time = send_cmd_dict[str_command][1]
 
     @property
     def word_command(self):
-        return self.str_command
+        if self.check:
+            return f'{self.str_command};{self.setval}'
+        else:
+            return self.str_command
 
     @word_command.setter
     def word_commmand(self, command):
@@ -87,18 +102,24 @@ class tipnovus:
 
     @property
     def code_command(self):
-        return send_cmd_dict[self.str_command][0]
+        if self.check:
+            return f'{send_cmd_dict[self.str_command][0][:-3]}{self.setval}#'
+        else:
+            return send_cmd_dict[self.str_command][0]
 
     @property
     def encode_str_cmd(self):
-        return send_cmd_dict[self.str_command][0].encode()
+        if self.check:
+            return f'{send_cmd_dict[self.str_command][0][:-3]}{self.setval}#'.encode()
+        else:
+            return send_cmd_dict[self.str_command][0].encode()
 
 
 class tpserial:
     def __init__(self, port):
         self._ser = None
         self._baudrate = 115200
-        self._port = port 
+        self._port = port
         self._timeout = 10
 
     @property
@@ -130,7 +151,7 @@ class tpserial:
         self.byte_command = byte_command
         try:
             self._ser.write(byte_command)
-            logger.debug(f'Sent {byte_command} to serial device')
+            tipnovus_logger.debug(f'Sent {byte_command} to serial device')
         except Exception as e:
             handle_logs(f'Serial connection errored whilst sending {byte_command}: {e}')
 
@@ -144,7 +165,7 @@ class tpserial:
             else:
                 sleep(0.1)
                 _response += self._ser.read(n_)
-        logger.debug(f'Read {_response.decode()} from serial device')
+        tipnovus_logger.debug(f'Read {_response.decode()} from serial device')
         return _response.decode()
 
     def __enter__(self):

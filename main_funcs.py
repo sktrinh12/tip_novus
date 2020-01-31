@@ -4,7 +4,7 @@ from ack_funcs import *
 from rest_sql3_class import *
 from tipnovus_class_api import *
 from marshmallow import ValidationError, pprint
-from tp_schemas import tp_ser_cmd_schema
+from tp_schemas import tp_ser_cmd_schema, tp_ser_check_setcmd_schema, validate_val
 
 tpcmd_schema = tp_ser_cmd_schema()
 tp_ser = None
@@ -15,17 +15,18 @@ def handle_logs(*args):
     return
 
 def send_cmd(cmd):
+    check_setcmd = cmd
     tp = tipnovus(cmd)
     tp_ser.write_cmd(tp.encode_str_cmd)
     sleep(0.1)
     str_response = tp_ser.read_resp
     if str_response == tp.code_command:
-        print_output(f"resp: {str_response} (SUCCESS)")
+        print_output(f"response: {str_response} (SUCCESS)")
     if cmd.startswith('set_'):
         srch = f'{tp.code_command[:12]}' #substring up to the default value within the tipnovus cmd class
         if re.search(srch + '\d{1,2}#', str_response):
-            print_output(f"resp: {str_response} (SUCCESS)")
-    output = f'func: {__name__}', f'sent: {tp.code_command}', f'resp: {str_response}'
+            print_output(f"response: {str_response} (SUCCESS)")
+    output = f'func: {__name__}', f'sent: {tp.code_command}', f'response: {str_response}'
     #print(output)
     handle_logs(output)
     return tp.code_command, str_response
@@ -74,9 +75,11 @@ def ack_cmd(cmd_):
             status_code_dict['interp'] = interp_msg
     if cmd_ == "check_sensor":
         data = sensor_check(spr) #print out sensor numbers that are faulty
-        if data:
+        if data and data != 'problem': #if there is a list of codes due to faulty sensor, then...
             status_code_dict['status'] = data
             status_code_dict['interp'] = 'sensor(s) are faulty!'
+        elif data == 'problem':
+            status_code_dict['interp'] = 'problem interpreting the response!'
         else:
             status_code_dict['interp'] = 'sensors passed!'
     return status_code_dict, str_response
@@ -136,6 +139,7 @@ def ref_fx_cmd_proc(cmd, fx):
     setval_request = request.form.get('setval', False)
     input_cmd_dict = {'code_cmd' : '', 'cmd' : cmd, 'response' : ''} # initialise
     if setval_request and fx.__name__ == "send_cmd":
+        print(setval_request)
         tpsetcmd_schema = tp_ser_check_setcmd_schema() # checks if it is a set_d type cmd
         tpsetcmd_schema.load({'cmd_' : cmd})
         # temporarily fudge the resp/code_cmd to just check/validate the setval entry

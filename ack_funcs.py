@@ -110,6 +110,7 @@ def sensor_check(sub_response_str):
             else:
                 print_output("sensor check passed")
         else:
+            bad_sensor = 'problem' #probably no response
             print_output(f"The sensor_check output: '{sub_response_str}' is not interpretable")
         if bad_sensor:
             return ', '.join(bad_sensor)
