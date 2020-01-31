@@ -52,7 +52,7 @@ class tp_ser_cmd_schema(Schema):
                 if int(val) < 1 or int(val) > 100:
                     msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Incorrect range for setting time; >1 and <100 -> {val}'
                     raise ValidationError(msg)
-                    handle_logs(f('error', msg))
+                    handle_logs(('error', msg))
             elif typeof == 'temp':
                 if not val.isdigit():
                     msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Incorrect value to set temp parameter -> {val}'
@@ -75,15 +75,18 @@ class tp_ser_cmd_schema(Schema):
     def validate_resp(self, response):
         if response not in [a[0] for a in send_cmd_dict.values()]:
             # if not a dryer time remaining resp or check_sensor response
-            if not re.search('01,ACK,\d{1,4},#', response) and not re.search('[0|1]{7}',response):
-                msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Invalid response string -> {response}'
-                handle_logs(('error', msg))
-                raise ValidationError(msg)
+            if not re.search('01,ACK,\d{1,4},#', response):
+                if not re.search('[0|1]{7}',response):
+                    if not re.search('01,TI,DR,(TM|MT),\d{1,3}#', response):
+                        msg = f'fi:{__file__}_cls:{__class__}_fx:{__name__}:: Invalid response string -> {response}'
+                        handle_logs(('error', msg))
+                        raise ValidationError(msg)
 #}}}
 
 #{{{ SCHEMA RELATED FUNCTIONS
 def validate_val(cmd, code_cmd, setval):
     typeof, val = setval.split(';')
+    print('validating strings ...')
     if cmd == 'set_dtime':
         if typeof != 'time':
             msg = f'The set parameter and cmd string do not accord with each other -> {setval} != {cmd}'

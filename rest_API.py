@@ -163,9 +163,11 @@ class tp_ser_wbsrv(Resource):
         schema_check, data_dict = ref_fx_cmd_proc(cmd, send_cmd) #send cmd is a function
         if schema_check:
             #then acknowledge
-            schema_check, data_dict = ref_fx_cmd_proc(cmd, ack_cmd)
+            schema_check, ack_dict = ref_fx_cmd_proc(cmd, ack_cmd)
             if schema_check and data_dict['response']:
-                return data_dict, 201
+                #if cmd in ['dply_wash', 'dply_dryer', 'check_sensor'] or cmd.startswith('set_dt'):
+                return ack_dict, 201
+                #return data_dict, 201
             else:
                 return data_dict, 502
         else:
@@ -218,7 +220,7 @@ api.add_resource(tp_ser_wbsrv_cmds, '/tp_ser_wbsrv/cmds') #get list of valid com
 
 
 #{{{ ETAPE SENSOR API SOURCE
-api.add_resource(waste_check_5L_carboy, '/waste_check_wbsrv/api/5L')
+api.add_resource(waste_check_5L_carboy, '/tp_ser_wbsrv/carboy/5L')
 api.add_resource(waste_check_20L_carboy, '/waste_check_wbsrv/api/20L')
 api.add_resource(record_video_stream, '/tp_ser_wbsrv/record_video') #start video recording
 #}}}

@@ -10,24 +10,20 @@ tpcmd_schema = tp_ser_cmd_schema()
 tp_ser = None
 #{{{ MAIN FUNCTIONS
 
-@logit(tipnovus_logger)
-def handle_logs(*args):
-    return
+#@logit(tipnovus_logger)
+#def handle_logs(*args):
+#    return
 
 def send_cmd(cmd):
-    check_setcmd = cmd
     tp = tipnovus(cmd)
     tp_ser.write_cmd(tp.encode_str_cmd)
     sleep(0.1)
     str_response = tp_ser.read_resp
     if str_response == tp.code_command:
         print_output(f"response: {str_response} (SUCCESS)")
-    if cmd.startswith('set_'):
-        srch = f'{tp.code_command[:12]}' #substring up to the default value within the tipnovus cmd class
-        if re.search(srch + '\d{1,2}#', str_response):
+    if re.search('01,TI,DR,(TM|MT),\d{1,3}#', str_response): #substring up to the default value within the tipnovus cmd class
             print_output(f"response: {str_response} (SUCCESS)")
     output = f'func: {__name__}', f'sent: {tp.code_command}', f'response: {str_response}'
-    #print(output)
     handle_logs(output)
     return tp.code_command, str_response
 
@@ -139,7 +135,6 @@ def ref_fx_cmd_proc(cmd, fx):
     setval_request = request.form.get('setval', False)
     input_cmd_dict = {'code_cmd' : '', 'cmd' : cmd, 'response' : ''} # initialise
     if setval_request and fx.__name__ == "send_cmd":
-        print(setval_request)
         tpsetcmd_schema = tp_ser_check_setcmd_schema() # checks if it is a set_d type cmd
         tpsetcmd_schema.load({'cmd_' : cmd})
         # temporarily fudge the resp/code_cmd to just check/validate the setval entry
@@ -147,7 +142,8 @@ def ref_fx_cmd_proc(cmd, fx):
         input_cmd_dict['setval'] = setval_request
         cmd_wo_setval = cmd
         tpcmd_schema.load(input_cmd_dict) # actually only checking the setval
-        cmd = cmd + setval_request.split(';')[1] #concatenate the cmd to update it with the setval
+        cmd = f"{cmd};{setval_request.split(';')[1]}" #concatenate the cmd to update it with the setval
+        input_cmd_dict['cmd'] = cmd #overwrite with the current human readable cmd string
     data, response = fx(cmd) #ack or send, sent is the code cmd and cmd is the human readable cmd
     input_cmd_dict['response'] = response
     if isinstance(data, dict): #an ack cmd returns a dict
@@ -164,7 +160,10 @@ def ref_fx_cmd_proc(cmd, fx):
     schema_check = False
     try: #to load the cmd using the main marshmallow schema defined in tp_chema.py
         if setval_request and fx.__name__ == "send_cmd":
+            #print(cmd_wo_setval, input_cmd_dict['code_cmd'], input_cmd_dict['setval'])
             validate_val(cmd_wo_setval, input_cmd_dict['code_cmd'], input_cmd_dict['setval']) #validate the setval and code_cmd
+            print('validation of setval completed')
+            input_cmd_dict['cmd'] = cmd_wo_setval #overwrite the current human readable cmd string to prepare loading into  validation schema (a default accepted value)
         tpcmd_schema.load(input_cmd_dict) # if setval; check second time with real data
         schema_check = True
     except ValidationError as err:
@@ -181,6 +180,8 @@ def ref_fx_cmd_proc(cmd, fx):
             output = output + (f'interpretation: {input_cmd_dict["interp"]}',)
         handle_logs(output)
         input_cmd_dict['response'] = response
+        if fx.__name__ == "send_cmd":
+            input_cmd_dict['cmd'] = cmd #overwrite the current human readable cmd string with ';[::digits::]
     return schema_check, input_cmd_dict
 
 def abort_if_invalid(input_str_dict):

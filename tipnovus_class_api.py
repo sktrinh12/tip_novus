@@ -4,9 +4,10 @@ from logging_decor import *
 from time import sleep
 import re
 
+
 @logit(tipnovus_logger)
-def handle_logs(*args):
-    print(*args)
+def handle_logs(args):
+    print(args)
 
 #{{{ FORMAT COMMANDS 
 class FC:
@@ -73,7 +74,7 @@ send_cmd_dict = {
 class tipnovus:
     def __init__(self, str_command):
         def check_setcmd(str_cmd):
-            if re.search('set_dt.*\d{1,3}$', str_cmd):
+            if re.search('set_d(temp|time);\d{1,3}$', str_cmd):
                 return True
             else:
                 return False
@@ -103,14 +104,14 @@ class tipnovus:
     @property
     def code_command(self):
         if self.check:
-            return f'{send_cmd_dict[self.str_command][0][:-3]}{self.setval}#'
+            return f'{send_cmd_dict[self.str_command][0][:12]}{self.setval}#'
         else:
             return send_cmd_dict[self.str_command][0]
 
     @property
     def encode_str_cmd(self):
         if self.check:
-            return f'{send_cmd_dict[self.str_command][0][:-3]}{self.setval}#'.encode()
+            return f'{send_cmd_dict[self.str_command][0][:12]}{self.setval}#'.encode()
         else:
             return send_cmd_dict[self.str_command][0].encode()
 

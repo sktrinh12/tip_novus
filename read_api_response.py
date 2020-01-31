@@ -62,7 +62,10 @@ args = parser.parse_args()
 
 
 def set_url_endpoint(endpoint, request_type):
-    url = f'http://{gethostname()}:5000/tp_ser_wbsrv/{endpoint}'
+    hostname = gethostname()
+    if hostname.startswith('raspb'):
+        hostname += '.local'
+    url = f'http://{hostname}:5000/tp_ser_wbsrv/{endpoint}'
     if request_type == "get":
         response = requests.get(url=url)
     elif request_type == "put":
@@ -72,12 +75,18 @@ def set_url_endpoint(endpoint, request_type):
                 time=args.video[1],
                 wrkflow_name=args.video[2]
             )
-        else:
+        elif endpoint.startswith('update'):
             data = dict(
                 setval=args.setval,
                 code_cmd=args.code_resp[0],
                 response=args.code_resp[1]
             )
+        elif 'set_dt' in endpoint:
+            data = dict(
+                setval=args.setval
+                )
+        else:
+            data = ''
         # print(data)
         response = requests.put(url=url, data=data)
     return response
@@ -92,6 +101,7 @@ if __name__ == "__main__":
     else:
         print('BAD')
     output = res.json()
+    output = output['response']
     # output['status_code'] = res.status_code
     # output['reason'] = res.reason
     pprint(output)
