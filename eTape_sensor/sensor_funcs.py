@@ -111,7 +111,7 @@ def trigger_led(pin, trigger):
             GPIO.output(pin, GPIO.LOW)
 
 def poly_reg_model(filename):
-    load_model = pickle.load(open(f'{os.path.join(instance_dir,"eTape_sensor", "static")}/{filename}', 'rb'))
+    load_model = pickle.load(open(f'{os.path.join(instance_dir,"static")}/{filename}', 'rb'))
     return load_model
 
 def condition_led(volume, carboy):

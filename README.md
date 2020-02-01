@@ -1,19 +1,24 @@
-API for robotic liquid handler tip cleaner - Grenova TipNovus. The API is hosted on a raspberry pi 4 running flask on the backend. The app allows users to get liquid level sensor data real-time and monitors reagent carboys with coloured LEDS. A pi-camera is installed which can stream data on a endpoint. 
+## Integration API for TipNovus tip washer in Hamiton Vantage
 
-Calling the api can be done using curl:
+The API is hosted on a **raspberry pi 4** running flask on the backend. The app allows users to get liquid level sensor data real-time and monitors reagent carboys with coloured LEDS. A pi-camera is installed which can stream data on an endpoint or save a video for a particular time-frame.
+
+#### Calling the api can be done using curl:
 
 getting the status of the washer compartment:
-curl http:{gethostname}:5000/tp_ser_wbsrv/dply_wash -X PUT
 
-OR ... running the python script (argparse) through the termainal:
+   curl http:{$hostname}:5000/tp_ser_wbsrv/dply_wash -X PUT
 
-python read_response_api.py -e dply_wash -t put
+where `$hostname` is the nameof the current host (computer). A json response will be
+outputted in the terminal, such as: 
+   { "cmd": "dply_wash", "response": "01,TI,WA,WS,#", "code_cmd" : "01,ACK,00,#", "interpreation": "washer compartment is not in operation" }
 
-typing curl http:{gethostname}:5000/tp_ser_wbsrv/cmds -X GET will list all the available commands.  
+OR ... running the python script (read_response_api.py which uses argparse) through the termainal:
+
+   python read_response_api.py -e dply_wash -t put
+
+typing `curl http:{$hostname}:5000/tp_ser_wbsrv/cmds -X GET` will list all the available valid commands.  
+
+Streaming video can be done typing: `http://{gethostname}:5000/tp_ser_wbsrv into a browser where one can view live video stream from the picamera.
 
 
-Streaming video can be done typing: 
-
-entering http://{gethostname}:5000/tp_ser_wbsrv into a browser one can view live video stream from the picamera. 
-
-Project completed for integrating the Grenova TipNovus mini tip cleaner into a Hamilton Vantage.
+*Project completed for integrating the Grenova TipNovus mini tip cleaner into a Hamilton Vantage.*

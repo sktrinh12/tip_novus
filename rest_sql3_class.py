@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask, request
 import os
 
-app = Flask(__name__, root_path = 'eTape_sensor/')
+app = Flask(__name__) #root_path = 'eTape_sensor/')
 instance_dir = app.instance_path.replace('instance','')
 tp_db_filepath = os.path.join(instance_dir + '/db', 'tp_rest.db')
 vid_db_filepath = os.path.join(instance_dir + '/db', 'videoID.db')

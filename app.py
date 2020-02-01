@@ -47,6 +47,7 @@ class record_video_stream(Resource):
 
 
 @app.route('/tp_ser_wbsrv')
+@app.route('/')
 def index():
     return render_template('index.html')
 
@@ -70,8 +71,8 @@ def stop():
     btn_res = request.args.get('btn_type')
     return jsonify({'btn' : btn_res})
 
-@app.route('/tp_ser_wbsrv/video_feed/raw_feed')
-def video_feed():
+@app.route('/videofeed')
+def videofeed():
     return Response(gen(picam), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/output_test')
@@ -221,7 +222,7 @@ api.add_resource(tp_ser_wbsrv_cmds, '/tp_ser_wbsrv/cmds') #get list of valid com
 
 #{{{ ETAPE SENSOR API SOURCE
 api.add_resource(waste_check_5L_carboy, '/tp_ser_wbsrv/carboy/5L')
-api.add_resource(waste_check_20L_carboy, '/waste_check_wbsrv/api/20L')
+api.add_resource(waste_check_20L_carboy, '/tp_ser_wbsrv/carboy/20L')
 api.add_resource(record_video_stream, '/tp_ser_wbsrv/record_video') #start video recording
 #}}}
 
