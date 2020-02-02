@@ -9,6 +9,8 @@ def create_logger(name, level = logging.INFO):
     """
     current_date = str(datetime.now().strftime('%G-%m-%d'))
     fpath = os.path.join(os.path.dirname(__file__), 'logs/')
+    #fpath = '/home/pi/mount/ndrive/logs'
+
     # create the logging file handler
     logger = logging.getLogger(name)
     logger.setLevel(level)
@@ -42,4 +44,10 @@ def logit(logger):
         return wrapper_logit
     return decorator_logit
 
+
 tipnovus_logger = create_logger('tipnovus')
+
+
+@logit(tipnovus_logger)
+def handle_logs(args):
+    print(args)

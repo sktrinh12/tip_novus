@@ -6,6 +6,7 @@ import signal
 import json
 from main_funcs import *
 from tp_schemas import *
+from logging_decor import handle_logs
 
 api = Api(app)
 picam = Camera()
@@ -34,14 +35,13 @@ class waste_check_20L_carboy(Resource):
 #{{{ VIDEO STREAMING
 class record_video_stream(Resource):
     def put(self):
-        vid_status['trigger'] = request.form['trigger']
+        vid_status = {}
         vid_status['time'] = request.form['time']
         vid_status['wrkflow_name'] = request.form['wrkflow_name']
-        # data_dict = {'response' : 'ERROR'}
-        if vid_status['trigger'] == 'on' and validate_trigger_cmd():
+        if validate_trigger_cmd(vid_status):
+            #print('validated video parameters!')
             fp = record_video(vid_status['time'], vid_status['wrkflow_name'])
-            # extra_info = f" trigger:{vid_status['trigger']}, time:{vid_status['time']}, workflow:{vid_status['wrkflow_name']}"
-            return {'response' : True}, 201
+            return {'response' : True, "file_path" : fp}, 201
         else:
             abort_if_invalid(data_dict)
 
@@ -74,15 +74,15 @@ def stop():
 @app.route('/videofeed')
 def videofeed():
     return Response(gen(picam), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/output_test')
-def output_test():
-    def inner():
-        for x in range(100):
-            time.sleep(1)
-            json_data = json.dumps({'data' : x})
-            yield f"data:{x}\n\n"
-    return Response(inner(), mimetype = 'text/event-stream')
+#
+#@app.route('/output_test')
+#def output_test():
+#    def inner():
+#        for x in range(100):
+#            time.sleep(1)
+#            json_data = json.dumps({'data' : x})
+#            yield f"data:{x}\n\n"
+#    return Response(inner(), mimetype = 'text/event-stream')
 
 #@app.route('/console_output')
 #def console_output():
@@ -90,9 +90,9 @@ def output_test():
 #        #main() was the tipnovus_api_v3.py fx
 #    return Response(inner_co(), mimetype='text/event-stream')
 
-@app.route('/tp_ser_wbsrv/display_std_output')
-def dply_output():
-    return render_template('console_output.html' )
+#@app.route('/tp_ser_wbsrv/display_std_output')
+#def dply_output():
+#    return render_template('console_output.html' )
 
 #}}}
 

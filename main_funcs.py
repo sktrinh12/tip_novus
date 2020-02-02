@@ -10,9 +10,6 @@ tpcmd_schema = tp_ser_cmd_schema()
 tp_ser = None
 #{{{ MAIN FUNCTIONS
 
-#@logit(tipnovus_logger)
-#def handle_logs(*args):
-#    return
 
 def send_cmd(cmd):
     tp = tipnovus(cmd)
@@ -21,8 +18,8 @@ def send_cmd(cmd):
     str_response = tp_ser.read_resp
     if str_response == tp.code_command:
         print_output(f"response: {str_response} (SUCCESS)")
-    if re.search('01,TI,DR,(TM|MT),\d{1,3}#', str_response): #substring up to the default value within the tipnovus cmd class
-            print_output(f"response: {str_response} (SUCCESS)")
+    elif re.search('01,TI,DR,(TM|MT),\d{1,3}#', str_response): #substring up to the default value within the tipnovus cmd class
+        print_output(f"response: {str_response} (SUCCESS)")
     output = f'func: {__name__}', f'sent: {tp.code_command}', f'response: {str_response}'
     handle_logs(output)
     return tp.code_command, str_response
@@ -52,7 +49,7 @@ def ack_cmd(cmd_):
     if not spr:
         output = f"{__file__}_{__name__}: No response string to parse from the ping cmd: {cmd_}"
         handle_logs(('error', output))
-        print_output(output)
+        #print_output(output)
     else:
         status_code_dict['ack'] = ack.code_command
     if 'dply' in cmd_:
@@ -82,7 +79,7 @@ def ack_cmd(cmd_):
 
 def check_conn():
     res = tp_ser.is_connected
-    print_output(res)
+    print_output(f'is connected: {res}')
     output = f'{__file__}_{__name__}: check if connected = {res}'
     handle_logs(output)
     return res
@@ -94,12 +91,10 @@ def connect_tp():
     tp_ser.write_cmd(tp.encode_str_cmd)
     sleep(tp.buffer_wait_time)
     str_response = tp_ser.read_resp
-    # print(str_response)
     if str_response == tp.code_command:
         print_output(f"resp: {str_response} (SUCCESS)")
 
     output = f'func: {connect_tp.__name__}', f'sent: {tp.code_command}', f'resp: {str_response}'
-    # print(output)
     handle_logs(output)
     return tp.code_command, str_response
 
@@ -115,7 +110,6 @@ def disconnect_tp():
         print_output(f"resp: {str_response} (SUCCESS)")
     tp_ser.disconnect
     output = f'func: {disconnect_tp.__name__}', f'sent: {tp_con.code_command} {tp_ack.code_command}', f'resp: {str_response}'
-    # print(output)
     handle_logs(output)
     return tp_con.code_command, tp_ack.code_command, str_response
 #}}}

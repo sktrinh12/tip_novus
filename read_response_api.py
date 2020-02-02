@@ -2,21 +2,48 @@ import requests
 from socket import gethostname
 from pprint import pprint
 import argparse
-from tipnovus_class_api import send_cmd_dict
+#from tipnovus_class_api import send_cmd_dict
 import re
+import platform    # For getting the operating system name
+import subprocess  # For executing a shell command
 
 """
-    Script to interface with TipNovus instrument via the Hamilton Instinct V software. An API call can be made to the Flask web server on the raspberry pi (or other host) connected to the TipNovus instrument. Can be used as a CLI from terminal as well. The output is a simple 'OK' or 'BAD' based on the request status code, either 201 or 400.
+    Script to interface with TipNovus instrument via the Hamilton Instinct V software. An API call can be made to the Flask web server on the raspberry pi (or other host) connected to the TipNovus instrument. Can be used as a CLI from terminal as well. The output is a simple 'OK' or 'BAD' based on the request status code, either 201 or 400; and the response string.
 
 """
+
+def ping(host):
+    """
+    Returns True if host (str) responds to a ping request.
+    Remember that a host may not respond to a ping (ICMP) request even if the host name is valid.
+    """
+
+    # Option for the number of packets as a function of
+    param = '-n' if platform.system().lower()=='windows' else '-c'
+
+    # Building the command. Ex: "ping -c 1 google.com"
+    command = ['ping', param, '1', host]
+    #will raise error if return value is not 0, suppresses output, redirect stdout and stderr to DEVNULL
+    try:
+        subprocess.check_call(command,
+                                stdout=subprocess.DEVNULL,
+                                stderr=subprocess.DEVNULL
+                                )
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
 
 #for argparse endpoint choices
-available_word_cmds = list(send_cmd_dict.keys())
+with open('send_cmds.csv', 'r') as f:
+    available_word_cmds = f.readlines()[0].split(',')
+with open('code_cmds.csv', 'r') as f:
+    available_code_cmds = f.readlines()[0].split(',')
+
 available_word_cmds = available_word_cmds + \
                 [f'update/{cmds}' for cmds in available_word_cmds] + \
                 ['connect','disconnect','response', 'cmds', 'record_video']
 
-available_code_cmds = [v[0] for v in send_cmd_dict.values()]
 description = '''
     Call the tipnovus API using a url with endpoint that corresponds to the flask-restful defined endpoint. Used to issue commands, receive responses, list the available commands, connect and disconnect from the tipnovus instrument.
               '''
@@ -52,28 +79,30 @@ parser.add_argument('-t', '--request_type', type=str, required=True,
 
 parser.add_argument('-cr', '--code_resp', nargs='*',
                     type=allowed_cmds_check, metavar='',
-                    help='The raw code command and the response to update the SQL3 database')
+                    help='The raw code command and the response to update the SQL3 database manually')
 parser.add_argument('-sv', '--setval', nargs='?', type=setval_check, metavar='',
                      help='The value to set for the dryer compartment, i.e. time;20 or temp;50')
 parser.add_argument('-vd', '--video', nargs='*', metavar='',
-                    help='Set three parameters to start a video recording, (on, time, workflow name)')
+                    help='Set two parameters to start a video recording, (time, workflow name)')
 
 args = parser.parse_args()
 
 
 def set_url_endpoint(endpoint, request_type):
-    hostname = gethostname()
-    if hostname.startswith('raspb'):
-        hostname += '.local'
-    url = f'http://{hostname}:5000/tp_ser_wbsrv/{endpoint}'
+    if ping('raspberrypi.local'):
+        hostnm = 'raspberrypi.local' #the rpi seen from mac osx
+    elif ping('spencerrpi.local'):
+        hostnm = 'spencerrpi.local' #other rpi for testing
+    else:
+        hostnm = '192.168.1.212' #the rpi seen from the hamilton pc, since using static ip
+    url = f'http://{hostnm}:5000/tp_ser_wbsrv/{endpoint}'
     if request_type == "get":
-        response = requests.get(url=url)
+        response = requests.get(url=url, timeout=12)
     elif request_type == "put":
         if args.video:
             data = dict(
-                trigger=args.video[0],
-                time=args.video[1],
-                wrkflow_name=args.video[2]
+                time=args.video[0],
+                wrkflow_name=args.video[1]
             )
         elif endpoint.startswith('update'):
             data = dict(
@@ -88,7 +117,7 @@ def set_url_endpoint(endpoint, request_type):
         else:
             data = ''
         # print(data)
-        response = requests.put(url=url, data=data)
+        response = requests.put(url=url, data=data, timeout=12)
     return response
 
 

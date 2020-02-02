@@ -5,9 +5,6 @@ from time import sleep
 import re
 
 
-@logit(tipnovus_logger)
-def handle_logs(args):
-    print(args)
 
 #{{{ FORMAT COMMANDS 
 class FC:

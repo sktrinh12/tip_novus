@@ -1,28 +1,25 @@
-#import logging
 import pickle
-#import threading
 from sklearn.linear_model import LinearRegression
+import subprocess
 import sys
 import os
 from eTape_sensor.hardware_config import *
+from eTape_sensor.pi_camera import picamera
 from datetime import datetime
-# import string
-#import sqlite3
-#from sqlite3 import Error
-from rest_sql3_class import instance_dir, vid_db_filepath
-# from random import choice
+from rest_sql3_class import instance_dir, vid_db_filepath, tpdb
 sys.path.insert(1, instance_dir)
-from logging_decor import create_logger
+from logging_decor import create_logger, handle_logs
 
 
 time_interval = 800 # seconds
-vid_status = {}
+rec_vid_dir = '/home/pi/mount/macdrive/recorded_videos'
+#vid_status = {}
 
-def validate_trigger_cmd():
-    check_trigger = vid_status['trigger'] in ['on', 'off']
-    check_time = vid_status['time'].isdigit() and int(vid_status['time']) > 0
-    check_workflow = 'workflow' in vid_status['wrkflow_name'].lower()
-    return all([item == True for item in [check_trigger, check_time, check_workflow]])
+def validate_trigger_cmd(vid_status_dict):
+    #check_trigger = vid_status['trigger'] in ['on', 'off']
+    check_time = vid_status_dict['time'].isdigit() and int(vid_status_dict['time']) > 0
+    check_workflow = 'workflow' in vid_status_dict['wrkflow_name'].lower()
+    return all([item == True for item in [check_time, check_workflow]])
 
 def bkg_etape(thread_event):
     while not thread_event.wait(timeout=time_interval):
@@ -35,50 +32,32 @@ def record_video(record_time, wrkflw):
         # unq_id = gen_unq_id(12)
         record_time = int(record_time)
         current_time = datetime.now()
-        time_iso_format = current_time.isoformat()
-        ts_file = current_time.strftime('%G-%b-%dT%H_%M_%S')
-        file_path = f'{file_path}{ts_file}_{wrkflw}.h264'
-        camera.start_recording(file_path, quality=10)
-        camera.wait_recording(record_time)
+        #time_iso_format = current_time.isoformat()
+        ts= current_time.strftime('%G-%b-%dT%H_%M_%S')
+        file_name = f'{ts}_{wrkflw}.h264'
+        file_path = os.path.join(rec_vid_dir,'h264_format', file_name)
+        camera.start_recording(file_path, quality=10) #lower is better
+        camera.annotate_text = ts
+        camera.wait_recording(record_time) #in seconds
         camera.stop_recording()
-    # conn = create_connection(db_path)
-    # with conn:
-    #     items = (current_time, unq_id, wrkflw)
-    #     insert_items(conn, items)
-    # conn.commit()
-    with tpdb(vid_db_filepath) as db:
-        db.execute("DELETE FROM VIDIDS")
-        db.execute(f"INSERT INTO VIDIDS VALUES ('{current_time}', '{file_path}{ts_file}', '{wrkflow})'")
+        file_name = file_name.split('.')[0] + '.mp4'
+        #print(f'filename: {file_name}')
+        #print(f'filepath: {file_path}')
+        new_file_path= os.path.join(rec_vid_dir, 'mp4_format', file_name)
+        subproc_cmd = f"MP4Box -add {file_path} {new_file_path}"
+        #convert from h264 -> mp4
+        try:
+            output = subprocess.check_output(subproc_cmd, stderr=subprocess.STDOUT, shell=True)
+            handle_logs('Subprocess for MP4Box convesion to {} was successful (record time = {}s)'.format(file_name, record_time))
+        except subprocess.CalledProcessError as e:
+            err_msg= f'Failed to convert file {file_path} - cmd:{e.cmd}; output:{e.output}'
+            handle_logs(('error',err_msg))
     return file_path
 
 
 # def gen_unq_id(size, chars=string.ascii_letters + string.digits):
 #     return ''.join(choice(chars) for x in range(size))
 
-# def create_connection(db_file):
-#     conn = None
-#     try:
-#         conn = sqlite3.connect(db_file)
-#     except Error as e:
-#         print(e)
-#     return conn
-
-# def insert_items(conn, items):
-#     sql = f'''INSERT INTO vidids VALUES (?,?,?)'''
-#     cur = conn.cursor()
-#     cur.execute(sql, items)
-#     return cur.lastrowid
-
-# def get_date():
-#     return str(datetime.today().strftime('%G-%d-%b'))
-
-#def setup_logger(name, log_file, level = logging.INFO):
-#    handler = logging.FileHandler(log_file, mode='+a')
-#    handler.setFormatter(fmt = formatter)
-#    logger = logging.getLogger(name)
-#    logger.setLevel(level)
-#    logger.addHandler(handler)
-#    return logger
 
 def check_voltage(carboy_size, logs):
       chan = channels_dict[f'{carboy_size}']
@@ -148,4 +127,4 @@ def background_check_volume():
     large_carboy_logs.info(f'pred_vol: {pred_volume_lg}')
     condition_led(pred_volume_sm, 'small')
     condition_led(pred_volume_lg, 'large')
-    print(f'VOLT_5L: {round(volt_sm,3)} _ PRED_VOL_5L: {round(pred_volume_sm,3)}  --  VOLT_20L: {round(volt_lg,3)} _ PRED_VOL_20L: {round(pred_volume_lg,3)}', end='\r', flush=True)
+    print(f'VOLT_5L:{round(volt_sm,3)}__PRED_VOL_5L:{round(pred_volume_sm,3)} -- VOLT_20L:{round(volt_lg,3)}__PRED_VOL_20L:{round(pred_volume_lg,3)}', end='\r', flush=True)

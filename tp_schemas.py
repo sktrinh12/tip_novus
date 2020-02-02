@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, pprint, ValidationError, validates#, post_load
-from main_funcs import handle_logs
+from logging_decor import handle_logs
 from tipnovus_class_api import send_cmd_dict, re
 
 #{{{ TPSerSetCmdSchema class
@@ -86,7 +86,7 @@ class tp_ser_cmd_schema(Schema):
 #{{{ SCHEMA RELATED FUNCTIONS
 def validate_val(cmd, code_cmd, setval):
     typeof, val = setval.split(';')
-    print('validating strings ...')
+    #print('validating strings ...')
     if cmd == 'set_dtime':
         if typeof != 'time':
             msg = f'The set parameter and cmd string do not accord with each other -> {setval} != {cmd}'

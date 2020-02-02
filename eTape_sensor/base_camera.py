@@ -34,23 +34,17 @@ class CameraEvent(object):
 
     def set(self):
         """Invoked by the camera thread when a new frame is available."""
-        # now = time.time()
         remove = None
         # remove the thread
         for ident, event in self.events.items():
             if not event.isSet() and self.trigger_btn:
                 # if this client's event is not set, then set it
-                # also update the last set timestamp to now
                 event.set()
                 #set internal flag to true; all threads waiting for it to become true are awakened
                 # event[1] = now
             else:
                 # if the client's event is already set, it means the client
                 # did not process a previous frame
-                # if the event stays set for more than 5 seconds, then assume
-                # the client is gone and remove it
-                # if now - event[1] > 5:
-                    # remove = ident
                 remove = ident
         if remove:
             # if the remove variable has a threading identifier then delete the thread to free up the memory
@@ -66,8 +60,6 @@ class CameraEvent(object):
 class BaseCamera(object):
     thread = None  # background thread that reads frames from camera
     frame = None  # current frame is stored here by background thread
-    # last_access = 0  # time of last client access to the camera
-    # trigger_btn = False
 
     def __init__(self):
         BaseCamera.cam_event = CameraEvent()
@@ -76,7 +68,7 @@ class BaseCamera(object):
         """Start the background camera thread if it isn't running yet."""
         # start background frame thread
         BaseCamera.cam_event.trigger(True)
-        print(BaseCamera.cam_event.trigger_btn)
+        #print(BaseCamera.cam_event.trigger_btn)
         BaseCamera.thread = threading.Thread(target=self._thread)
         BaseCamera.thread.start()
 
@@ -87,7 +79,7 @@ class BaseCamera(object):
     def stop(self):
         """Stop the background camera thread"""
         BaseCamera.cam_event.trigger(False)
-        print(self.cam_event.trigger_btn)
+        #print(self.cam_event.trigger_btn)
 
 
     def get_frame(self):
@@ -115,8 +107,6 @@ class BaseCamera(object):
                 BaseCamera.cam_event.set()  # send signal to clients
                 time.sleep(0)
 
-                # if there hasn't been any clients asking for frames in
-                # the last 10 seconds then stop the thread
                 if not BaseCamera.cam_event.trigger_btn:
                     frames_iterator.close()
                     print('Stopping camera thread...')
