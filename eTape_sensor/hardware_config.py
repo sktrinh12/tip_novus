@@ -33,4 +33,4 @@ channels_dict = {'small' : chan_sm, 'large' : chan_lg}
 led_dict = {'red_small' : pins['pin17'], 'green_small' :pins['pin18'], 'red_large' : pins['pin27'], 'green_large' : pins['pin23']}
 
 # capacities of small and large carboys
-carboy_capacity = {'small' : {'min':1.25,'max':7}, 'large' : {'min': 0,'max':26.5}}
+carboy_capacity = {'small' : {'min':1.5,'max':7}, 'large' : {'min': 0,'max':24.75}}

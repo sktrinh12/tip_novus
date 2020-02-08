@@ -5,11 +5,17 @@ from rest_sql3_class import *
 from tipnovus_class_api import *
 from marshmallow import ValidationError, pprint
 from tp_schemas import tp_ser_cmd_schema, tp_ser_check_setcmd_schema, validate_val
+from logging_decor import *
 
 tpcmd_schema = tp_ser_cmd_schema()
 tp_ser = None
+time_interval_tp = 80000 #around one day (80000 seconds)
 #{{{ MAIN FUNCTIONS
 
+
+def bkg_tp_log(thread_event):
+    while not thread_event.wait(timeout=time_interval_tp):
+        tipnovus_logger = create_logger('tipnovus')
 
 def send_cmd(cmd):
     tp = tipnovus(cmd)

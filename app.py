@@ -228,10 +228,15 @@ api.add_resource(record_video_stream, '/tp_ser_wbsrv/record_video') #start video
 
 signal.signal(signal.SIGINT, signal_handler)
 check_waste_volume = threading.Event()
+continue_logging_tp = threading.Event()
 
 bkg_thread = threading.Thread(name = 'bkg_led_indicator', target = bkg_etape, args=(check_waste_volume,))
 bkg_thread.setDaemon(True)
 bkg_thread.start()
+
+bkg_tp_logging = threading.Thread(name = 'bkg_tp_logging', target = bkg_tp_log, args=(continue_logging_tp,))
+bkg_tp_logging.setDaemon(True)
+bkg_tp_logging.start()
 
 if __name__ == '__main__':
     background_check_volume()

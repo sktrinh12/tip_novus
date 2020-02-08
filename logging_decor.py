@@ -15,7 +15,7 @@ def create_logger(name, level = logging.INFO):
     logger = logging.getLogger(name)
     logger.setLevel(level)
     fh = logging.FileHandler(f'{fpath}{current_date}_{name.upper()}.log', mode='a+')
-    fmt = "%(asctime)s, %(name)s, %(levelname)s [%(filename)s line:%(lineno)d],\t%(message)s"
+    fmt = "%(asctime)s, %(name)s, %(levelname)s,\t%(message)s"
     formatter = logging.Formatter(fmt, datefmt = "%d-%b-%G %H:%M:%S")
     fh.setFormatter(formatter)
 
@@ -45,9 +45,11 @@ def logit(logger):
     return decorator_logit
 
 
+global tipnovus_logger
 tipnovus_logger = create_logger('tipnovus')
 
 
 @logit(tipnovus_logger)
 def handle_logs(args):
-    print(args)
+    return
+    #print(args)
