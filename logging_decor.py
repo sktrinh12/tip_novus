@@ -8,14 +8,14 @@ def create_logger(name, level = logging.INFO):
     Creates a logging object and returns it
     """
     current_date = str(datetime.now().strftime('%G-%m-%d'))
-    fpath = os.path.join(os.path.dirname(__file__), 'logs/')
-    #fpath = '/home/pi/mount/ndrive/logs'
+    #fpath = os.path.join(os.path.dirname(__file__), 'logs/')
+    fpath = '/home/pi/mount/hampc/tp_logs/logs/'
 
     # create the logging file handler
     logger = logging.getLogger(name)
     logger.setLevel(level)
     fh = logging.FileHandler(f'{fpath}{current_date}_{name.upper()}.log', mode='a+')
-    fmt = "%(asctime)s, %(name)s, %(levelname)s,\t%(message)s"
+    fmt = "%(asctime)s, %(name)s, %(levelname)s, %(threadName)s,\t%(message)s"
     formatter = logging.Formatter(fmt, datefmt = "%d-%b-%G %H:%M:%S")
     fh.setFormatter(formatter)
 
