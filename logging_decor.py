@@ -1,13 +1,19 @@
 import logging
 from functools import wraps
 from datetime import datetime
+import requests
 import os
+
+time_host = "http://192.168.1.3:8020/time"
 
 def create_logger(name, level = logging.INFO):
     """
     Creates a logging object and returns it
     """
-    current_date = str(datetime.now().strftime('%G-%m-%d'))
+    try:
+        current_date = requests.get(time_host).json()['current_time']
+    except Exception:
+        current_date = str(datetime.now().strftime('%G-%m-%d'))
     #fpath = os.path.join(os.path.dirname(__file__), 'logs/')
     fpath = '/home/pi/mount/hampc/tp_logs/logs/'
 
