@@ -6,7 +6,7 @@ import signal
 import json
 from main_funcs import *
 from tp_schemas import *
-from logging_decor import handle_logs
+from logging_decor import handle_logs, time_host
 
 api = Api(app)
 picam = Camera()
@@ -99,7 +99,10 @@ def videofeed():
 #{{{ TPSerWebServ class
 class tp_wbsrv_upd(Resource):
     def put(self, cmd):
-        current_ts = datetime.now().strftime('%G-%b-%d %H:%M:%S')
+        try:
+            current_ts = requests.get(time_host).json()['current_time']
+        except Exception:
+            current_ts = datetime.now().strftime('%G-%b-%d %H:%M:%S')
         input_cmd_dict = {'cmd' : cmd, \
                           'code_cmd' : request.form['code_cmd']}
         schema_check = False
