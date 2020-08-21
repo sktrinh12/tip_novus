@@ -9,7 +9,7 @@ from logging_decor import *
 
 tpcmd_schema = tp_ser_cmd_schema()
 tp_ser = None
-time_interval_tp = 80000 #around one day (80000 seconds)
+time_interval_tp = 20000 #little less than third of a day (86,000)
 #{{{ MAIN FUNCTIONS
 
 
