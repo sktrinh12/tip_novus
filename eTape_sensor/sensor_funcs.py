@@ -12,7 +12,7 @@ from logging_decor import create_logger, handle_logs
 
 
 time_interval = 800 # seconds
-rec_vid_dir = '/home/pi/mount/macdrive/recorded_videos'
+rec_vid_dir = '/home/pi/mount/hampc/tp_logs/recorded_videos/'
 #vid_status = {}
 
 def validate_trigger_cmd(vid_status_dict):
