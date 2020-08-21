@@ -6,9 +6,10 @@ import os
 from eTape_sensor.hardware_config import *
 from eTape_sensor.pi_camera import picamera
 from datetime import datetime
+import requests
 from rest_sql3_class import instance_dir, vid_db_filepath, tpdb
 sys.path.insert(1, instance_dir)
-from logging_decor import create_logger, handle_logs
+from logging_decor import create_logger, handle_logs, time_host
 
 
 time_interval = 800 # seconds
@@ -31,7 +32,10 @@ def record_video(record_time, wrkflw):
         camera.resolution = (640, 480)
         # unq_id = gen_unq_id(12)
         record_time = int(record_time)
-        current_time = datetime.now()
+        try:
+            current_time = requests.get(time_host).json()['current_time']
+        except Exception:
+            current_time = datetime.now()
         #time_iso_format = current_time.isoformat()
         ts= current_time.strftime('%G-%b-%dT%H_%M_%S')
         file_name = f'{ts}_{wrkflw}.h264'
