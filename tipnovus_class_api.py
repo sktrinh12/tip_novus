@@ -19,10 +19,10 @@ class FC:
 
     @property
     def util_cmds(self):
-        if self.part_of_cmd_2 == '':
-            return f"0{self.tp_unit},{self.part_of_cmd_1},#"
-        else:
-            return f"0{self.tp_unit},{self.part_of_cmd_1},#"
+        #if self.part_of_cmd_2 == '':
+        #    return f"0{self.tp_unit},{self.part_of_cmd_1},#"
+        #else:
+        return f"0{self.tp_unit},{self.part_of_cmd_1},#"
 
     def setparam(self, setvar):
         self.setvar = setvar
@@ -54,7 +54,7 @@ send_cmd_dict = {
     'dply_wash' : [FC(TP, WA, 'WS').run_cmds, FC.to_secs(0.04)],
     'dply_dryer' : [FC(TP, DR, 'DS').run_cmds, FC.to_secs(0.03)],
     'abort_dryer' : [FC(TP, DR, 'AD').run_cmds, FC.to_secs(0.03)],
-    'abort_wash' : [FC(TP, DR, 'AW').run_cmds, FC.to_secs(0.02)],
+    'abort_wash' : [FC(TP, WA, 'AW').run_cmds, FC.to_secs(0.02)],
     'get_dtemp' : [FC(TP, DR, 'CT').run_cmds, FC.to_secs(0.02)],
     'primeA' : [FC(TP, WA, 'PA').run_cmds, FC.to_secs(0.04)],
     'primeDI' : [FC(TP, WA, 'PD').run_cmds, FC.to_secs(0.04)],
@@ -129,7 +129,7 @@ class tpserial:
             handle_logs(f"Connected to TipNovus! ({self._port})")
             return self
         except serial.SerialException as e:
-            handle_logs(f"Error occured during serial connection - {e}")
+            handle_logs(('error',f"Error occured during serial connection - {e}"))
             sys.exit(1)
 
     @property
@@ -151,7 +151,7 @@ class tpserial:
             self._ser.write(byte_command)
             tipnovus_logger.debug(f'Sent {byte_command} to serial device')
         except Exception as e:
-            handle_logs(f'Serial connection errored whilst sending {byte_command}: {e}')
+            handle_logs(('error',f'Serial connection errored whilst sending {byte_command}: {e}'))
 
     @property
     def read_resp(self):
@@ -161,7 +161,7 @@ class tpserial:
             if not n_:
                 break
             else:
-                sleep(0.32)
+                sleep(0.36)
                 _response += self._ser.read(n_)
         tipnovus_logger.debug(f'Read {_response.decode()} from serial device')
         return _response.decode()
