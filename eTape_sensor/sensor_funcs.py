@@ -9,7 +9,7 @@ from datetime import datetime
 import requests
 from rest_sql3_class import instance_dir, vid_db_filepath, tpdb
 sys.path.insert(1, instance_dir)
-from logging_decor import create_logger, handle_logs, time_host
+from logging_decor import create_logger, handle_logs, time_host, get_time
 
 
 time_interval = 800 # seconds
@@ -32,16 +32,13 @@ def record_video(record_time, wrkflw):
         camera.resolution = (640, 480)
         # unq_id = gen_unq_id(12)
         record_time = int(record_time)
-        try:
-            current_time = requests.get(time_host).json()['current_time']
-        except Exception:
-            current_time = datetime.now()
-        #time_iso_format = current_time.isoformat()
-        ts= current_time.strftime('%G-%b-%dT%H_%M_%S')
+        ts = datetime.strptime(get_time(), '%Y-%b-%d %H:%M:%S').strftime('%Y-%b-%d_%H-%M-%S')
+        print(ts)
+        #ts = datetime.now().strftime('%G-%b-%dT%H_%M_%S')
         file_name = f'{ts}_{wrkflw}.h264'
         file_path = os.path.join(rec_vid_dir,'h264_format', file_name)
         camera.start_recording(file_path, quality=10) #lower is better
-        camera.annotate_text = ts
+        #camera.annotate_text = ts
         camera.wait_recording(record_time) #in seconds
         camera.stop_recording()
         file_name = file_name.split('.')[0] + '.mp4'
