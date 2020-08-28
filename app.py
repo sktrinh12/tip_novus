@@ -6,7 +6,7 @@ import signal
 import json
 from main_funcs import *
 from tp_schemas import *
-from logging_decor import handle_logs, time_host
+from logging_decor import handle_logs, time_host, get_time
 
 api = Api(app)
 picam = Camera()
@@ -41,7 +41,8 @@ class record_video_stream(Resource):
         if validate_trigger_cmd(vid_status):
             #print('validated video parameters!')
             fp = record_video(vid_status['time'], vid_status['wrkflow_name'])
-            return {'response' : True, "file_path" : fp}, 201
+            vid_status["file_path"] = fp
+            return {'response' :  vid_status}, 201
         else:
             abort_if_invalid(data_dict)
 
@@ -100,7 +101,7 @@ def videofeed():
 class tp_wbsrv_upd(Resource):
     def put(self, cmd):
         try:
-            current_ts = requests.get(time_host).json()['current_time']
+            current_ts = get_time()
         except Exception:
             current_ts = datetime.now().strftime('%G-%b-%d %H:%M:%S')
         input_cmd_dict = {'cmd' : cmd, \
