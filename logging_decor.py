@@ -6,12 +6,16 @@ import os
 
 time_host = "http://192.168.1.3:8020/time"
 
+def get_time():
+    return requests.get(time_host).json()['current_time']
+
 def create_logger(name, level = logging.INFO):
     """
     Creates a logging object and returns it
     """
     try:
-        current_date = requests.get(time_host).json()['current_time']
+        # get just the date for log files
+        current_date = get_time().split(' ')[0]
     except Exception:
         current_date = str(datetime.now().strftime('%G-%m-%d'))
     #fpath = os.path.join(os.path.dirname(__file__), 'logs/')
