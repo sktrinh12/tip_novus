@@ -6,10 +6,13 @@ import signal
 import json
 from main_funcs import *
 from tp_schemas import *
+from eTape_sensor.video_thread import *
 from logging_decor import handle_logs, time_host, get_time
 
 api = Api(app)
 picam = Camera()
+record_video_cls = None
+vd_thread = None
 
 #{{{ ETAPE SENSOR
 class waste_check_5L_carboy(Resource):
@@ -33,18 +36,42 @@ class waste_check_20L_carboy(Resource):
 #}}}
 
 #{{{ VIDEO STREAMING
-class record_video_stream(Resource):
+ #class record_video_stream(Resource):
+ #    def put(self):
+ #        vid_status = {}
+ #        vid_status['time'] = request.form['time']
+ #        vid_status['wrkflow_name'] = request.form['wrkflow_name']
+ #        if validate_trigger_cmd(vid_status):
+ #            #print('validated video parameters!')
+ #            fp = record_video(vid_status['time'], vid_status['wrkflow_name'])
+ #            vid_status["file_path"] = fp
+ #            return {'response' :  vid_status}, 201
+ #        else:
+ #            abort_if_invalid(data_dict)
+
+class record_video_stream_on(Resource):
     def put(self):
+        global record_video_cls, vd_thread
         vid_status = {}
         vid_status['time'] = request.form['time']
         vid_status['wrkflow_name'] = request.form['wrkflow_name']
         if validate_trigger_cmd(vid_status):
-            #print('validated video parameters!')
-            fp = record_video(vid_status['time'], vid_status['wrkflow_name'])
-            vid_status["file_path"] = fp
-            return {'response' :  vid_status}, 201
+            record_video_cls = RecordVideoClass()
+            vd_thread = ThreadWithReturnValue(target=record_video_cls.record_video, args=(vid_status['time'], vid_status['wrkflow_name']))
+            vd_thread.start()
+            return {'response' :  'video recording...'}, 201
         else:
-            abort_if_invalid(data_dict)
+            abort_if_invalid({'response' : f'error involving argument validation of time and workflow name - {vid_status}'})
+
+class record_video_stream_off(Resource):
+    def get(self):
+        global record_video_cls, vd_thread
+        record_video_cls.terminate()
+        # join with a thread, which waits for it to terminate
+        # This blocks the calling thread until the thread whose
+        # join() method is called terminates
+        file_path = vd_thread.join()
+        return {'response': file_path}, 200
 
 
 @app.route('/tp_ser_wbsrv')
@@ -227,7 +254,8 @@ api.add_resource(tp_ser_wbsrv_cmds, '/tp_ser_wbsrv/cmds') #get list of valid com
 #{{{ ETAPE SENSOR API SOURCE
 api.add_resource(waste_check_5L_carboy, '/tp_ser_wbsrv/carboy/5L')
 api.add_resource(waste_check_20L_carboy, '/tp_ser_wbsrv/carboy/20L')
-api.add_resource(record_video_stream, '/tp_ser_wbsrv/record_video') #start video recording
+api.add_resource(record_video_stream_on, '/tp_ser_wbsrv/record_video_on') #start video recording
+api.add_resource(record_video_stream_off, '/tp_ser_wbsrv/record_video_off') #stop video recording
 #}}}
 
 signal.signal(signal.SIGINT, signal_handler)
