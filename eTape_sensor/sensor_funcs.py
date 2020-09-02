@@ -1,59 +1,22 @@
 import pickle
 from sklearn.linear_model import LinearRegression
-import subprocess
 import sys
 import os
 from eTape_sensor.hardware_config import *
-from eTape_sensor.pi_camera import picamera
 from datetime import datetime
-import requests
-from rest_sql3_class import instance_dir, vid_db_filepath, tpdb
+#import requests
+from rest_sql3_class import instance_dir, tpdb
 sys.path.insert(1, instance_dir)
 from logging_decor import create_logger, handle_logs, time_host, get_time
 
 
 time_interval = 800 # seconds
-rec_vid_dir = '/home/pi/mount/hampc/tp_logs/recorded_videos/'
 #vid_status = {}
-
-def validate_trigger_cmd(vid_status_dict):
-    #check_trigger = vid_status['trigger'] in ['on', 'off']
-    check_time = vid_status_dict['time'].isdigit() and int(vid_status_dict['time']) > 0
-    check_workflow = 'workflow' in vid_status_dict['wrkflow_name'].lower()
-    return all([item == True for item in [check_time, check_workflow]])
 
 def bkg_etape(thread_event):
     while not thread_event.wait(timeout=time_interval):
         background_check_volume()
 
-
-def record_video(record_time, wrkflw):
-    with picamera.PiCamera() as camera:
-        camera.resolution = (640, 480)
-        # unq_id = gen_unq_id(12)
-        record_time = int(record_time)
-        ts = datetime.strptime(get_time(), '%Y-%b-%d %H:%M:%S').strftime('%Y-%b-%d_%H-%M-%S')
-        print(ts)
-        #ts = datetime.now().strftime('%G-%b-%dT%H_%M_%S')
-        file_name = f'{ts}_{wrkflw}.h264'
-        file_path = os.path.join(rec_vid_dir,'h264_format', file_name)
-        camera.start_recording(file_path, quality=10) #lower is better
-        #camera.annotate_text = ts
-        camera.wait_recording(record_time) #in seconds
-        camera.stop_recording()
-        file_name = file_name.split('.')[0] + '.mp4'
-        #print(f'filename: {file_name}')
-        #print(f'filepath: {file_path}')
-        new_file_path= os.path.join(rec_vid_dir, 'mp4_format', file_name)
-        subproc_cmd = f"MP4Box -add {file_path} {new_file_path}"
-        #convert from h264 -> mp4
-        try:
-            output = subprocess.check_output(subproc_cmd, stderr=subprocess.STDOUT, shell=True)
-            handle_logs('Subprocess for MP4Box convesion to {} was successful (record time = {}s)'.format(file_name, record_time))
-        except subprocess.CalledProcessError as e:
-            err_msg= f'Failed to convert file {file_path} - cmd:{e.cmd}; output:{e.output}'
-            handle_logs(('error',err_msg))
-    return file_path
 
 
 # def gen_unq_id(size, chars=string.ascii_letters + string.digits):
