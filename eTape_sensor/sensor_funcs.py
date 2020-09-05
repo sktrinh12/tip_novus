@@ -1,26 +1,23 @@
 import pickle
 from sklearn.linear_model import LinearRegression
 import sys
-import os
 from eTape_sensor.hardware_config import *
-from datetime import datetime
-#import requests
 from rest_sql3_class import instance_dir, tpdb
 sys.path.insert(1, instance_dir)
-from logging_decor import create_logger, handle_logs, time_host, get_time
+from logging_decor import *
 
 
 time_interval = 800 # seconds
-#vid_status = {}
+
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
 
 def bkg_etape(thread_event):
     while not thread_event.wait(timeout=time_interval):
         background_check_volume()
-
-
-
-# def gen_unq_id(size, chars=string.ascii_letters + string.digits):
-#     return ''.join(choice(chars) for x in range(size))
 
 
 def check_voltage(carboy_size, logs):
