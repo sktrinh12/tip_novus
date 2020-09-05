@@ -1,0 +1,39 @@
+.btn-group {
+   cursor: pointer;
+   display: block;
+   padding:20px;
+   border-radius: 10px;
+   -moz-border-radius: 10px;
+   -webkit-border-radius: 10px;
+   margin:10px;
+   width: 120px;
+   height: 70px;
+}
+
+.btn-group:hover {
+   background-color: #0066cc;
+}
+
+div#video_stream {
+   width : 696px;
+   height : 464px;
+   border-style : solid;
+   border-width : 2px;
+   position : relative;
+   z-index: 1;
+}
+
+div#overlay {
+   width : 696px;
+   height : 464px;
+   position : absolute;
+   align-items : center;
+   justify-content : center;
+   border-style : solid;
+   border-width : 2px;
+   display : flex;
+}
+
+div#overlay {
+   z-index: 999;
+}

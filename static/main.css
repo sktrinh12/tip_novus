@@ -1,0 +1,59 @@
+body {
+     font-family: helvetica, arial, sans-serif;
+}
+
+table {
+     border: solid 1px #DDEEEE;
+       border-spacing: 2px;
+         padding:10px;
+           margin: 0 auto;
+}
+
+/* to have bullet points in table tag */
+p {
+       display:list-item;
+           list-style:disc inside;
+               padding:0 0 0 14px;
+                   margin:0;
+}
+
+.ctr-title {
+     align-items: center;
+       justify-content: center;
+         text-align:center;
+}
+
+.column {
+     float: left;
+       width: 50%;
+         align-items: center;
+           justify-content: center;
+             text-align:center;
+}
+
+.container {
+     position:relative;
+       min-height:80%;
+         border:2px solid #EEEEEE;
+           overflow:hidden;
+}
+
+.list-space {
+     margin:4px;
+       padding:5px;
+}
+
+#input-div, .date-input {
+  font-size: 16px;
+}
+
+#flash-msg {
+  margin-left: -15px;
+}
+
+/* change bootstrap container width */
+@media (min-width: 1200px) {
+       .container{
+                  max-width: 1300px;
+                      }
+}
