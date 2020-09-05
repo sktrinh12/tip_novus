@@ -11,10 +11,11 @@ from logging_decor import *
 tpcmd_schema = tp_ser_cmd_schema()
 tp_ser = None
 time_interval_tp = 20000 #little less than third of a day (86,000)
-path = os.path.join(app.instance_path.replace('instance', ''), 'static', 'videos', 'mp4_format')
+dt_fmt = '%d-%m-%Y'
+#path = os.path.join(app.instance_path.replace('instance', ''), 'static', 'videos', 'mp4_format')
 #{{{ MAIN FUNCTIONS
 
-def make_tree():
+def make_tree(path):
     ''' Directory tree generation and its rendering as html'''
     try:
         #video_path = os.path.join(fpath, 'recorded_videos', 'mp4_format')
@@ -32,11 +33,11 @@ def make_tree():
 def filter_func(date):
     ''' filter video files by date '''
     filtered_lst = []
-    lst = make_tree()
+    lst = make_tree(app.config['VIDEO_DIR'])
     if isinstance(date, datetime):
         difftime = date
     else:
-        difftime = datetime.strptime(date, '%d-%m-%Y')
+        difftime = datetime.strptime(date, dt_fmt)
     for fi in lst:
         ts = os.path.getmtime(fi)
         dt = datetime.fromtimestamp(ts)
