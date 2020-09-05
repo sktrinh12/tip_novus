@@ -1,4 +1,8 @@
 *.log
 *.pyc
+sktrinh12
 hamapp
+static/videos/*
+static/bootstrap-4.3.1-dist/*
+static/jquery-ui-1.12.1/*
 

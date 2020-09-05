@@ -34,6 +34,8 @@ def ping(host):
         return False
 
 
+timeo_dict = {'self_clean' : 12, 'check_sensor' : 50}
+
 #for argparse endpoint choices
 with open('send_cmds.csv', 'r') as f:
     available_word_cmds = f.readlines()[0].split(',')
@@ -42,7 +44,7 @@ with open('code_cmds.csv', 'r') as f:
 
 available_word_cmds = available_word_cmds + \
                 [f'update/{cmds}' for cmds in available_word_cmds] + \
-                ['connect','disconnect','response', 'cmds', 'record_video']
+                ['connect','disconnect','response', 'cmds', 'record_video_on', 'record_video_off']
 
 description = '''
     Call the tipnovus API using a url with endpoint that corresponds to the flask-restful defined endpoint. Used to issue commands, receive responses, list the available commands, connect and disconnect from the tipnovus instrument.
