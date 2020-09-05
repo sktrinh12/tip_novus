@@ -17,6 +17,7 @@
                      <div class="column">
                            <h2>Playback</h2>
                                  <video id="videosrc" width="640" height="480" controls>
+                                    <source src="" type="video/mp4">
                                          No video currently loaded.
                                  </video>
                      </div><!-- column -->
@@ -30,7 +31,7 @@
                     {% endblock %}
 
                      <div class="column">
-                      <form action='/filter_by_date' method='post' class="form-inline">
+                      <form action='/tp_ser_wbsrv/filter_by_date' method='post' class="form-inline">
                          <div id="input-div">
                            <label for="date-picker">Pick date to filter videos: </label>
                              <input type="text" id="date-picker" name="date-picker" label="date-picker"/>
@@ -38,20 +39,20 @@
                             </div>
                           </form>
 
-                                                                                                      <div class="col-10" id="flash-msg">
-                                                                                                      {% with errors = get_flashed_messages(category_filter=["warning"]) %}
-                                                                                                      {% if errors %}
-                                                                                                      {%- for message in errors %}
-                                                                                                       <div class="alert alert-warning" role="alert">
-                                                                                                         <span><strong>{{ message }}</strong></span>
-                                                                                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                                                                         <span aria-hidden="true">&times;</span>
-                              </button>
-                              </div>
-                              {% endfor -%}
-                            {% endif %}
-                              {% endwith %}
-                              </div><!-- flash msg -->
+                     <div class="col-10" id="flash-msg">
+                     {% with errors = get_flashed_messages(category_filter=["warning"]) %}
+                     {% if errors %}
+                     {%- for message in errors %}
+                      <div class="alert alert-warning" role="alert">
+                        <span><strong>{{ message }}</strong></span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+               </div>
+               {% endfor -%}
+             {% endif %}
+               {% endwith %}
+               </div><!-- flash msg -->
 
 
                    </div><!-- column -->
