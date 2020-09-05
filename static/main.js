@@ -1,12 +1,18 @@
-var videosrc = $("#videosrc");
+//var videosrc = $("#videosrc > source");
+//var videosrc = document.getElementsByTagName("source")[0];
+var videotag = document.getElementsByTagName("video")[0];
 //var fpath = 'file:///C:/Program Files/Hamilton/logs/tipNovus/recorded_videos/mp4_format'
 
-function switch_video(self) {
+function switch_video(self, ipaddr) {
    var filename = self.text;
-   var videotag = document.getElementsByTagName("video")[0];
-      console.log(filename);
-      videosrc.attr('src', `/static/videos/mp4_format/${filename}`);
-      videotag.load();
+   var videosrc = document.createElement("source");
+   videotag.innerHTML = '';
+   url = `http://${ipaddr}:5000/tp_ser_wbsrv/video/${filename}`;
+   console.log(url);
+   videosrc.setAttribute('src', url);
+   videosrc.setAttribute('type', "video/mp4");
+   videotag.appendChild(videosrc);
+   videotag.load();
 };
 
 $('#date-picker').datepicker({
