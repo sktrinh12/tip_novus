@@ -1,5 +1,5 @@
 from flask_restful import Resource, Api
-from flask import render_template, Response, jsonify
+from flask import render_template, Response, jsonify, redirect, request, flash
 from eTape_sensor.pi_camera import *
 from eTape_sensor.sensor_funcs import *
 import signal
@@ -7,12 +7,14 @@ import json
 from main_funcs import *
 from tp_schemas import *
 from eTape_sensor.video_thread import *
-from logging_decor import handle_logs, time_host, get_time
+from logging_decor import *
 
 api = Api(app)
 picam = Camera()
 record_video_cls = None
 vd_thread = None
+
+app.config['SECRET_KEY'] = 'SECRET'
 
 #{{{ ETAPE SENSOR
 class waste_check_5L_carboy(Resource):
@@ -73,17 +75,34 @@ class record_video_stream_off(Resource):
         file_path = vd_thread.join()
         return {'response': file_path}, 200
 
+@app.route('/tp_ser_wbsrv/video_feed')
+def video_feed():
+    return render_template('video_feed.html')
 
-@app.route('/tp_ser_wbsrv')
+@app.route('/tp_ser_wbsrv/video_recording')
 @app.route('/')
-def index():
-    return render_template('index.html')
+def video_recording():
+    today = datetime.now()
+    fnlst = filter_func(today)
+    return render_template('index.html', listdir=fnlst)
 
-def gen(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+@app.route('/filter_by_date', methods=["POST"])
+def filter_by_date():
+    date = request.form['date-picker']
+    print(date)
+    if not date:
+        msg = "Enter a date to filter by"
+        print(msg)
+        flash(msg, 'warning')
+        return redirect('/')
+    filtered_lst = filter_func(date)
+    if not filtered_lst:
+        msg = f"{date} didn't contain any recordings"
+        print(msg)
+        flash(msg, 'warning')
+        return redirect('/')
+    return render_template('index.html', listdir=filtered_lst)
+
 
 @app.route('/tp_ser_wbsrv/video_feed/start')
 def start():
