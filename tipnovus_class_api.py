@@ -78,7 +78,7 @@ class tipnovus:
         self.check = check_setcmd(str_command)
         if str_command not in send_cmd_dict.keys():
             if not self.check:
-                raise ValueError('that command does not exist!')
+                raise ValueError(f'that command does not exist! - {str_command}')
             else:
                 self.str_command = str_command[:9]
                 self.setval = str_command[10:]
