@@ -5,7 +5,7 @@ import requests
 import os
 
 time_host = "http://192.168.1.3:8020/time"
-fpath = '/home/pi/mount/hampc/tp_logs/'
+fpath = '/home/pi/mount/hampc/tp_logs'
 
 def get_time():
     return requests.get(time_host).json()['current_time']
@@ -24,8 +24,8 @@ def create_logger(name, level = logging.INFO):
     # create the logging file handler
     logger = logging.getLogger(name)
     logger.setLevel(level)
-    _fpath = os.path.join(fpath, 'logs')
-    fh = logging.FileHandler(f'{_fpath}{current_date}_{name.upper()}.log', mode='a+')
+    logpath = os.path.join(fpath, 'logs')
+    fh = logging.FileHandler(os.path.join(logpath,f'{current_date}_{name.upper()}.log'), mode='a+')
     fmt = "%(asctime)s, %(name)s, %(levelname)s, %(threadName)s,\t%(message)s"
     formatter = logging.Formatter(fmt, datefmt = "%d-%b-%G %H:%M:%S")
     fh.setFormatter(formatter)
