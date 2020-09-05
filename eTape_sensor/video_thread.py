@@ -5,7 +5,8 @@ from datetime import datetime
 import subprocess
 import os
 
-rec_vid_dir = '/home/pi/mount/hampc/tp_logs/recorded_videos/'
+#rec_vid_dir = '/home/pi/mount/hampc/tp_logs/recorded_videos/'
+rec_vid_dir = os.path.join('/home/pi/hamilton_web_app_v1.2/tip_novus/static/videos')
 
 def validate_trigger_cmd(vid_status_dict):
     #check_trigger = vid_status['trigger'] in ['on', 'off']
