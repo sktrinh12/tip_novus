@@ -1,5 +1,5 @@
 from flask_restful import Resource, Api
-from flask import render_template, Response, jsonify, redirect, request, flash
+from flask import render_template, Response, jsonify, redirect, request, flash, send_from_directory, abort
 from eTape_sensor.pi_camera import *
 from eTape_sensor.sensor_funcs import *
 import signal
@@ -15,6 +15,8 @@ record_video_cls = None
 vd_thread = None
 
 app.config['SECRET_KEY'] = 'SECRET'
+app.config['VIDEO_DIR'] = os.path.join(fpath, 'recorded_videos', 'mp4_format')
+app.config['IPADDR'] = '192.168.1.212'
 
 #{{{ ETAPE SENSOR
 class waste_check_5L_carboy(Resource):
@@ -37,19 +39,6 @@ class waste_check_20L_carboy(Resource):
         return {'large_carboy_voltage' : volt_lg, 'large_carboy_predicted_vol' : pred_volume_lg}
 #}}}
 
-#{{{ VIDEO STREAMING
- #class record_video_stream(Resource):
- #    def put(self):
- #        vid_status = {}
- #        vid_status['time'] = request.form['time']
- #        vid_status['wrkflow_name'] = request.form['wrkflow_name']
- #        if validate_trigger_cmd(vid_status):
- #            #print('validated video parameters!')
- #            fp = record_video(vid_status['time'], vid_status['wrkflow_name'])
- #            vid_status["file_path"] = fp
- #            return {'response' :  vid_status}, 201
- #        else:
- #            abort_if_invalid(data_dict)
 
 class record_video_stream_on(Resource):
     def put(self):
@@ -68,6 +57,7 @@ class record_video_stream_on(Resource):
 class record_video_stream_off(Resource):
     def get(self):
         global record_video_cls, vd_thread
+        #print(vd_thread.is_alive())
         record_video_cls.terminate()
         # join with a thread, which waits for it to terminate
         # This blocks the calling thread until the thread whose
@@ -75,18 +65,17 @@ class record_video_stream_off(Resource):
         file_path = vd_thread.join()
         return {'response': file_path}, 200
 
+
 @app.route('/tp_ser_wbsrv/video_feed')
 def video_feed():
     return render_template('video_feed.html')
 
-@app.route('/tp_ser_wbsrv/video_recording')
+@app.route('/tp_ser_wbsrv')
 @app.route('/')
 def video_recording():
-    today = datetime.now()
-    fnlst = filter_func(today)
-    return render_template('index.html', listdir=fnlst)
+    return render_template('index.html')
 
-@app.route('/filter_by_date', methods=["POST"])
+@app.route('/tp_ser_wbsrv/filter_by_date', methods=["POST"])
 def filter_by_date():
     date = request.form['date-picker']
     print(date)
@@ -96,13 +85,27 @@ def filter_by_date():
         flash(msg, 'warning')
         return redirect('/')
     filtered_lst = filter_func(date)
+    today = datetime.strptime(get_time(), '%Y-%b-%d %H:%M:%S')
+    if datetime.strptime(date, dt_fmt).day > today.day:
+        msg = f"{date} is in the future!"
+        print(msg)
+        flash(msg, 'warning')
+        return redirect('/')
     if not filtered_lst:
         msg = f"{date} didn't contain any recordings"
         print(msg)
         flash(msg, 'warning')
         return redirect('/')
-    return render_template('index.html', listdir=filtered_lst)
+    return render_template('index.html', listdir=filtered_lst, ipaddr = app.config['IPADDR'])
 
+
+@app.route('/tp_ser_wbsrv/video/<filename>')
+def show_video(filename):
+    try:
+        #print(f"{app.config['VIDEO_DIR']}/{filename}")
+        return send_from_directory(app.config['VIDEO_DIR'], filename=filename)
+    except FileNotFoundError:
+        abort(404)
 
 @app.route('/tp_ser_wbsrv/video_feed/start')
 def start():
