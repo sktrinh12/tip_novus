@@ -1,4 +1,5 @@
 from flask_restful import abort
+from flask import current_app as app
 from tipnovus_class_api import *
 from ack_funcs import *
 from rest_sql3_class import *
@@ -10,7 +11,40 @@ from logging_decor import *
 tpcmd_schema = tp_ser_cmd_schema()
 tp_ser = None
 time_interval_tp = 20000 #little less than third of a day (86,000)
+path = os.path.join(app.instance_path.replace('instance', ''), 'static', 'videos', 'mp4_format')
 #{{{ MAIN FUNCTIONS
+
+def make_tree():
+    ''' Directory tree generation and its rendering as html'''
+    try:
+        #video_path = os.path.join(fpath, 'recorded_videos', 'mp4_format')
+        #lst = os.listdir(video_path)
+        lst = os.listdir(path)
+        #lst = [os.path.join(video_path, fn) for fn in lst if fn.endswith('mp4')]
+        lst = [os.path.join(path, fn) for fn in lst if fn.endswith('mp4')]
+        lst = sorted(lst, key=os.path.getmtime)
+    except OSError as e:
+        msg = f'OSError occured - {e}'
+        print(msg)
+    return lst
+
+
+def filter_func(date):
+    ''' filter video files by date '''
+    filtered_lst = []
+    lst = make_tree()
+    if isinstance(date, datetime):
+        difftime = date
+    else:
+        difftime = datetime.strptime(date, '%d-%m-%Y')
+    for fi in lst:
+        ts = os.path.getmtime(fi)
+        dt = datetime.fromtimestamp(ts)
+        if dt.day == difftime.day and \
+                dt.month == difftime.month and \
+                dt.year == difftime.year:
+            filtered_lst.append(fi)
+    return [os.path.basename(fn) for fn in filtered_lst]
 
 
 def bkg_tp_log(thread_event):
