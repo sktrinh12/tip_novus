@@ -1,24 +1,23 @@
 {% extends 'base.html' %}
 {% block body %}
 <table>
-    <tbody>
-        {% if (listdir is defined) and listdir %}
-         {%- for item in listdir %}
+<tbody>
+     {% if (listdir is defined) and listdir %}
+      {%- for item in listdir %}
 
-         <tr>
-         <td>
+      <tr>
+      <td class="td-text">
+         <p class="list-space">
+         <a class="atag-text" href="#" onclick="switch_video(this, '{{ipaddr}}')">{{item}}</a>
+         </p>
 
-            <p class="list-space">
-            <a href="#" onclick="switch_video(this, '{{ipaddr}}')">{{item}}</a>
-            </p>
+      </td>
+      </tr>
 
-         </td>
-         </tr>
-
-         {%- endfor %}
-         {% endif %}
-         </tbody>
-         </table>
-         {% endblock %}
+      {%- endfor %}
+      {% endif %}
+</tbody>
+</table>
+{% endblock %}
 
 
