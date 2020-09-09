@@ -5,8 +5,7 @@ var contentype_txt = 'application/json; charset=utf-8'
 // // $("#video_stream").attr("src", reply); },
 
 
-function ajax_call(u, ct, dt, dat, succ){ u = url, ct = contentType, dt =
-   dataType, dat = data, succ = success
+function ajax_call(u, ct, dt, dat, succ){ 
    var params = {
       url : u,
       contentType : ct,
