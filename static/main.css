@@ -4,17 +4,30 @@ body {
 
 table {
      border: solid 1px #DDEEEE;
-       border-spacing: 2px;
-         padding:10px;
-           margin: 0 auto;
+     border-spacing: 2px;
+     padding:10px;
+     margin: 0 auto;
+     table-layout:fixed;
+     margin-left:10%;
+}
+
+.atag-text {
+   white-space:pre-wrap;
+   word-wrap:break-all;
+   text-align:left;
+}
+
+#playback-title {
+   word-wrap:break-word;
 }
 
 /* to have bullet points in table tag */
 p {
        display:list-item;
-           list-style:disc inside;
-               padding:0 0 0 14px;
-                   margin:0;
+       list-style:disc inside;
+       padding:0 0 0 10px;
+       margin:0;
+       text-align:left;
 }
 
 .ctr-title {
@@ -43,17 +56,18 @@ p {
        padding:5px;
 }
 
-#input-div, .date-input {
+#input-div {
   font-size: 16px;
+  margin-left:38%;
 }
 
 #flash-msg {
-  margin-left: -15px;
+  margin-left: 15%;
 }
 
 /* change bootstrap container width */
-@media (min-width: 1200px) {
+@media (min-width: 1600px) {
        .container{
-                  max-width: 1300px;
+                  max-width: 2000px;
                       }
 }
