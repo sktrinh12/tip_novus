@@ -2,67 +2,67 @@
 <html>
 <head>
   <title>TipNovus Videos</title>
-    <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui-1.12.1/jquery-ui.min.css') }}">
-          <link href="{{ url_for('static', filename='bootstrap-4.3.1-dist/css/bootstrap.min.css') }}" rel="stylesheet" media="all">
-            <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-              <link rel="icon" href="{{ url_for('static', filename='video.png') }}"> <!-- NEGATE THE FAVICON ERROR -->
-              </head>
-              <body>
-               <a class="ctr-title" href="{{ url_for('video_recording') }}"><h1>TipNovus video records</h1></a>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui-1.12.1/jquery-ui.min.css') }}">
+  <link href="{{ url_for('static', filename='bootstrap-4.3.1-dist/css/bootstrap.min.css') }}" rel="stylesheet" media="all">
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='video.png') }}"> <!-- NEGATE THE FAVICON ERROR -->
+  </head>
+  <body>
+  <a class="ctr-title" href="{{ url_for('video_recording') }}"><h1>TipNovus video records</h1></a>
+   <div class="container">
+   <div class="row">
 
-               <div class="container">
-                 <div class="row">
-                     <div class="column">
-                           <h2>Playback</h2>
-                                 <video id="videosrc" width="640" height="480" controls>
-                                    <source src="" type="video/mp4">
-                                         No video currently loaded.
-                                 </video>
-                     </div><!-- column -->
+      <div class="column">
+      <h2>Playback: <span id="playback-title"></span><h2>
+         <video id="videosrc" width="100%" height="100%" controls>
+            <source src="" type="video/mp4">
+                 No video currently loaded.
+         </video>
+      </div><!-- column -->
 
-                  <div class="column">
-                     <h2>Video selection</h2>
-                     <div class="row">
+      <div class="column">
+      <h2>Video selection</h2>
+      <!--div class="row"-->
 
-                     <!-- index.html -->
-                    {% block body %}
-                    {% endblock %}
+      <div id="file-column" class="column">
+      &nbsp
+      {% block body %} <!-- index.html -->
+      {% endblock %}
+      </div><!-- column -->
 
-                     <div class="column">
-                      <form action='/tp_ser_wbsrv/filter_by_date' method='post' class="form-inline">
-                         <div id="input-div">
-                           <label for="date-picker">Pick date to filter videos: </label>
-                             <input type="text" id="date-picker" name="date-picker" label="date-picker"/>
-                            <input class="date-input" type="submit" value="Submit">
-                            </div>
-                          </form>
+         <div class="column">
+            <form action='/tp_ser_wbsrv/filter_by_date' method='post' class="form-inline">
+            <div id="input-div">
+            <label for="date-picker">Pick date to filter videos: </label>
+            <input type="text" id="date-picker" name="date-picker" label="date-picker" autocomplete="off"/>
+            <input class="date-input" type="submit" value="Submit">
+            </div>
+            </form>
 
-                     <div class="col-10" id="flash-msg">
-                     {% with errors = get_flashed_messages(category_filter=["warning"]) %}
-                     {% if errors %}
-                     {%- for message in errors %}
-                      <div class="alert alert-warning" role="alert">
-                        <span><strong>{{ message }}</strong></span>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                     </button>
-               </div>
+            <div class="col-10" id="flash-msg">
+               {% with errors = get_flashed_messages(category_filter=["warning"]) %}
+               {% if errors %}
+               {%- for message in errors %}
+                  <div class="alert alert-warning" role="alert">
+                  <span><strong>{{ message }}</strong></span>
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+                  </div>
                {% endfor -%}
-             {% endif %}
+               {% endif %}
                {% endwith %}
-               </div><!-- flash msg -->
+            </div><!-- flash msg -->
 
+      </div><!-- column -->
 
-                   </div><!-- column -->
-                       </div><!-- row -->
+   </div><!-- outer column -->
+   <!--/div--><!-- row -->
 
-                           </div><!-- outer column -->
-
-
-                             </div><!-- row -->
-                               </div><!-- container -->
+   </div><!-- row -->
+   </div><!-- container -->
 
    <script src="{{ url_for('static' , filename='jquery.min.js') }}"></script>
    <script src="{{ url_for('static', filename='jquery-ui-1.12.1/jquery-ui.min.js') }}"></script>
