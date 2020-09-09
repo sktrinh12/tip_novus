@@ -1,6 +1,7 @@
 //var videosrc = $("#videosrc > source");
 //var videosrc = document.getElementsByTagName("source")[0];
 var videotag = document.getElementsByTagName("video")[0];
+var plybktitle = document.getElementById("playback-title");
 //var fpath = 'file:///C:/Program Files/Hamilton/logs/tipNovus/recorded_videos/mp4_format'
 
 function switch_video(self, ipaddr) {
@@ -12,6 +13,7 @@ function switch_video(self, ipaddr) {
    videosrc.setAttribute('src', url);
    videosrc.setAttribute('type', "video/mp4");
    videotag.appendChild(videosrc);
+   plybktitle.innerHTML = filename;
    videotag.load();
 };
 
@@ -21,3 +23,8 @@ $('#date-picker').datepicker({
     showButtonPanel: true,
     dateFormat: 'dd-mm-yy'
 });
+
+ //$('#date-picker').on('click', function(e) {
+ //   e.preventDefault();
+ //   $(this).attr("autocomplete", "off");
+ //});
