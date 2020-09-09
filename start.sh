@@ -1,3 +1,3 @@
-source hamapp/bin/activate
+source env/bin/activate
 python /home/pi/hamilton_web_app_v1.2/tip_novus/app.py
 deactivate
