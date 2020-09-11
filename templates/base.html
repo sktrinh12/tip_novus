@@ -32,11 +32,12 @@
       {% endblock %}
       </div><!-- column -->
 
-         <div class="column">
+         <div id="form-column" class="column" >
             <form action='/tp_ser_wbsrv/filter_by_date' method='post' class="form-inline">
             <div id="input-div">
             <label for="date-picker">Pick date to filter videos: </label>
-            <input type="text" id="date-picker" name="date-picker" label="date-picker" autocomplete="off"/>
+            <input type="text" id="date-picker" name="date-picker"
+            label="date-picker" autocomplete="off" size="7"/>
             <input class="date-input" type="submit" value="Submit">
             </div>
             </form>
