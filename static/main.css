@@ -9,11 +9,12 @@ table {
      margin: 0 auto;
      table-layout:fixed;
      margin-left:10%;
+     overflow:scroll;
 }
 
 .atag-text {
-   white-space:pre-wrap;
-   word-wrap:break-all;
+   /*white-space:pre-wrap;*/
+   /*word-wrap:break-word;*/
    text-align:left;
 }
 
@@ -36,6 +37,17 @@ p {
          text-align:center;
 }
 
+#file-column {
+   overflow:scroll;
+   width:70%;
+   overflow-y:hidden;
+   /*margin-left:1%;*/
+}
+
+#form-column {
+   width:30%;
+   /*margin-left:1%;*/
+}
 .column {
      float: left;
        width: 50%;
@@ -57,17 +69,23 @@ p {
 }
 
 #input-div {
+   display:block;
   font-size: 16px;
-  margin-left:38%;
+  margin-left:5%;
+}
+
+label {
+   display:block;
+   padding:1px;
 }
 
 #flash-msg {
-  margin-left: 15%;
+  margin-left: 2%;
 }
 
 /* change bootstrap container width */
-@media (min-width: 1600px) {
+@media (min-width: 1400px) {
        .container{
-                  max-width: 2000px;
+                  max-width: 1800px;
                       }
 }
