@@ -39,6 +39,23 @@ class waste_check_20L_carboy(Resource):
         return {'large_carboy_voltage' : volt_lg, 'large_carboy_predicted_vol' : pred_volume_lg}
 #}}}
 
+@app.route("/<status>")
+def onAction(status):
+    '''
+    turn on lamp switch
+    '''
+    if status == "on":
+        pin = 19
+        light_img = ''
+        GPIO.output (pin, GPIO.LOW)
+        print ("light is on - from flask route")
+    if status == "off":
+        pin = 0
+        light_img = ''
+        GPIO.output(pin, GPIO.HIGH)
+        print("light is off - from flask route")
+    return jsonify({"pin" : pin, "status" : status})
+
 
 class record_video_stream_on(Resource):
     def put(self):
@@ -85,7 +102,8 @@ def filter_by_date():
         flash(msg, 'warning')
         return redirect('/')
     filtered_lst = filter_func(date)
-    today = datetime.strptime(get_time(), '%Y-%b-%d %H:%M:%S')
+    #today = datetime.strptime(get_time(), '%Y-%b-%d %H:%M:%S')
+    today = datetime.now().strftime('%Y-%b-%d %H:%M:%S')
     if datetime.strptime(date, dt_fmt).day > today.day:
         msg = f"{date} is in the future!"
         print(msg)
@@ -149,10 +167,10 @@ def videofeed():
 #{{{ TPSerWebServ class
 class tp_wbsrv_upd(Resource):
     def put(self, cmd):
-        try:
-            current_ts = get_time()
-        except Exception:
-            current_ts = datetime.now().strftime('%G-%b-%d %H:%M:%S')
+#        try:
+#            current_ts = get_time()
+#        except Exception:
+        current_ts = datetime.now().strftime('%G-%b-%d %H:%M:%S')
         input_cmd_dict = {'cmd' : cmd, \
                           'code_cmd' : request.form['code_cmd']}
         schema_check = False
