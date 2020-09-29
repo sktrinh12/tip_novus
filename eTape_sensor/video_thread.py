@@ -1,5 +1,5 @@
 from threading import Thread
-from logging_decor import handle_logs, get_time
+from logging_decor import handle_logs#, get_time
 from eTape_sensor.pi_camera import picamera
 from datetime import datetime
 import subprocess
@@ -69,7 +69,8 @@ class RecordVideoClass:
     def record_video(self, record_time, wrkflw):
         #if self._running and int(record_time) < 15:
         record_time = int(record_time)
-        ts = datetime.strptime(get_time(), '%Y-%b-%d %H:%M:%S').strftime('%Y-%b-%d_%H-%M-%S')
+        #ts = datetime.strptime(get_time(), '%Y-%b-%d %H:%M:%S').strftime('%Y-%b-%d_%H-%M-%S')
+        ts = datetime.now().strftime('%Y-%b-%d_%H-%M-%S')
         self._file_name = f'{ts}_{wrkflw}.h264'
         self._file_path = os.path.join(rec_vid_dir,'h264_format', self._file_name)
         self._camera.start_recording(self._file_path, quality=22) # lower is better
