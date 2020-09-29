@@ -28,3 +28,22 @@ $('#date-picker').datepicker({
  //   e.preventDefault();
  //   $(this).attr("autocomplete", "off");
  //});
+
+
+function switch_lamp() {
+   var triggerBtn = document.getElementById("lamp-switch");
+   if (triggerBtn.checked === true) {
+      $.ajax({
+         url: '/on',
+         success: () => {
+            console.log('turned lamp on');
+         }});
+   } else {
+      $.ajax({
+         url: '/off',
+         success: () => {
+            console.log('turned lamp off');
+         }});
+      }
+};
+
