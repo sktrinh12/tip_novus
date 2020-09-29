@@ -20,5 +20,9 @@ OR ... running the python script (`read_response_api.py` which uses argparse) th
 
 typing `curl http:{$hostname}:5000/tp_ser_wbsrv/cmds -X GET` will list all the available valid commands. Streaming video can be done typing: `http://{$hostname}:5000/tp_ser_wbsrv/` into a browser where one can view live video stream from the picamera.
 
+#### Screenshots
+
+- serial device (tip cleaning)
+![tipnovus](screenshot_device.png)
 
 *Project completed for integrating the Grenova TipNovus mini tip cleaner into a Hamilton Vantage.*
