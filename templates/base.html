@@ -10,7 +10,11 @@
   <link rel="icon" href="{{ url_for('static', filename='video.png') }}"> <!-- NEGATE THE FAVICON ERROR -->
   </head>
   <body>
-  <a class="ctr-title" href="{{ url_for('video_recording') }}"><h1>TipNovus video records</h1></a>
+  <div class="ctr-title">
+  <a href="{{ url_for('video_recording') }}"><h1>TipNovus video records</h1></a>
+  {% include 'lights.html' %}
+  </div>
+
    <div class="container">
    <div class="row">
 
