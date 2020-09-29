@@ -45,16 +45,14 @@ def onAction(status):
     turn on lamp switch
     '''
     if status == "on":
-        pin = 19
         light_img = ''
-        GPIO.output (pin, GPIO.LOW)
+        GPIO.output (pins['pin5'], GPIO.HIGH)
         print ("light is on - from flask route")
     if status == "off":
-        pin = 0
         light_img = ''
-        GPIO.output(pin, GPIO.HIGH)
+        GPIO.output(pins['pin5'], GPIO.HIGH)
         print("light is off - from flask route")
-    return jsonify({"pin" : pin, "status" : status})
+    return jsonify({"pin" : pins['pin5'], "status" : status})
 
 
 class record_video_stream_on(Resource):
@@ -103,7 +101,7 @@ def filter_by_date():
         return redirect('/')
     filtered_lst = filter_func(date)
     #today = datetime.strptime(get_time(), '%Y-%b-%d %H:%M:%S')
-    today = datetime.now().strftime('%Y-%b-%d %H:%M:%S')
+    today = datetime.now()
     if datetime.strptime(date, dt_fmt).day > today.day:
         msg = f"{date} is in the future!"
         print(msg)
