@@ -5,7 +5,8 @@ import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
 import RPi.GPIO as GPIO
 
-pins = {'pin17' : 17,  'pin18' : 18,  'pin27' : 27, 'pin23' : 23}
+pins = {'pin17' : 17,  'pin18' : 18,  'pin27' : 27, 'pin23' : 23, 'pin5' : 5}
+# gpio 5 is for the light switch 
 
 GPIO.setmode(GPIO.BCM)
 for pn in pins.values():
