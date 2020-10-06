@@ -45,14 +45,12 @@ def onAction(status):
     turn on lamp switch
     '''
     if status == "on":
-        light_img = ''
-        GPIO.output (pins['pin5'], GPIO.HIGH)
+        GPIO.output (pins['pin24'], GPIO.HIGH)
         print ("light is on - from flask route")
     if status == "off":
-        light_img = ''
-        GPIO.output(pins['pin5'], GPIO.HIGH)
+        GPIO.output(pins['pin24'], GPIO.LOW)
         print("light is off - from flask route")
-    return jsonify({"pin" : pins['pin5'], "status" : status})
+    return jsonify({"pin" : pins['pin24'], "status" : status})
 
 
 class record_video_stream_on(Resource):
