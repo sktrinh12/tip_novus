@@ -5,12 +5,12 @@ import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
 import RPi.GPIO as GPIO
 
-pins = {'pin17' : 17,  'pin18' : 18,  'pin27' : 27, 'pin23' : 23, 'pin5' : 5}
-# gpio 5 is for the light switch 
+pins = {'pin17' : 17,  'pin18' : 18,  'pin27' : 27, 'pin23' : 23, 'pin24' : 24}
+# gpio 24 is for the light switch 
 
 GPIO.setmode(GPIO.BCM)
 for pn in pins.values():
-    GPIO.setup(pn, GPIO.OUT)
+    GPIO.setup(pn, GPIO.OUT, initial=GPIO.LOW)
 
 # create the spi bus
 spi = busio.SPI(clock = board.SCK, MISO = board.MISO, MOSI = board.MOSI)
