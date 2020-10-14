@@ -1,4 +1,4 @@
-## Integration API for TipNovus tip washer in Hamiton Vantage
+## Integration API for TipNovus tip washer in Hamilton Vantage Robotic Liquid Handler
 
 The API is hosted on a **raspberry pi 4** running flask on the backend. The app allows users to get liquid level sensor data real-time and monitors reagent carboys with coloured LEDS. A pi-camera is installed which can stream data on an endpoint or save a video for a particular time-frame.
 
@@ -18,7 +18,7 @@ OR ... running the python script (`read_response_api.py` which uses argparse) th
 
 `python read_response_api.py -e dply_wash -t put` 
 
-typing `curl http:{$hostname}:5000/tp_ser_wbsrv/cmds -X GET` will list all the available valid commands. Streaming video can be done typing: `http://{$hostname}:5000/tp_ser_wbsrv/` into a browser where one can view live video stream from the picamera.
+typing `curl http:{$hostname}:5000/tp_ser_wbsrv/cmds -X GET` will list all the available valid commands. Streaming video can be done typing: `http://{$hostname}:5000/tp_ser_wbsrv/` into a browser where one can view live video stream from the picamera. There is also a lamp controlled by the raspberry pi to turn on and off in order for the picamera to capture the robotic arm placing and removing the rack of tips to clean. Some of the images below show the GUI interface of the webapp. 
 
 #### Screenshots
 
