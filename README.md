@@ -23,6 +23,15 @@ typing `curl http:{$hostname}:5000/tp_ser_wbsrv/cmds -X GET` will list all the a
 #### Screenshots
 
 - serial device (tip cleaning)
-![tipnovus](screenshot_device.png)
+![tipnovus](static/screenshots/screenshot_device.png)
+
+- tipnovus machine with door open 
+![tipnovus](static/screenshots/opendoor.png)
+
+- robotic arm placing tip rack for cleaning
+![place](static/screenshots/place.png)
+
+- additional images 
+![place](static/screenshots/screenshot_app.png)
 
 *Project completed for integrating the Grenova TipNovus mini tip cleaner into a Hamilton Vantage.*
