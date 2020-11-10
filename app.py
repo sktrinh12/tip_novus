@@ -2,6 +2,7 @@ from flask_restful import Resource, Api
 from flask import render_template, Response, jsonify, redirect, request, flash, send_from_directory, abort
 from eTape_sensor.pi_camera import *
 from eTape_sensor.sensor_funcs import *
+from eTape_sensor.phidget_rfid import *
 import signal
 import json
 from main_funcs import *
@@ -160,6 +161,16 @@ def videofeed():
 
 #}}}
 
+class dmsokeg(Resource):
+    def get(self):
+        rftag = read_tag()
+        serial_nbr, tare_wt = get_tare_weight(rftag)
+        gross_wt = float(read_scale())
+        output = f'func: {self.__class__.__name__}_{self.get.__name__}', f"gross weight: {gross_wt}", f"tare weight: {tare_wt}", f"serial number: {serial_nbr}"
+        handle_logs(output)
+        return  {'rfid tag': rftag, 'gross weight' : gross_wt, 'tare weight': tare_wt, 'serial number': serial_nbr}
+
+
 #{{{ TPSerWebServ class
 class tp_wbsrv_upd(Resource):
     def put(self, cmd):
@@ -223,7 +234,6 @@ class tp_ser_wbsrv_response(Resource):
             output = f'func: {self.__class__.__name__}_{self.get.__name__}', f"response: {res}"
             handle_logs(output)
             return  {'response' : res}
-
 
 class tp_ser_wbsrv(Resource):
     # issuing commands
@@ -292,6 +302,7 @@ api.add_resource(waste_check_5L_carboy, '/tp_ser_wbsrv/carboy/5L')
 api.add_resource(waste_check_20L_carboy, '/tp_ser_wbsrv/carboy/20L')
 api.add_resource(record_video_stream_on, '/tp_ser_wbsrv/record_video_on') #start video recording
 api.add_resource(record_video_stream_off, '/tp_ser_wbsrv/record_video_off') #stop video recording
+api.add_resource(dmsokeg, '/tp_ser_wbsrv/dmsokeg') #dmso keg tare wt, gross wt, serial number
 #}}}
 
 signal.signal(signal.SIGINT, signal_handler)
