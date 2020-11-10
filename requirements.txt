@@ -14,3 +14,4 @@ requests
 rpi-ws281x
 RPi.GPIO
 scikit-learn==0.22
+Phidget22
