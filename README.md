@@ -2,7 +2,7 @@
 
 The API is hosted on a **raspberry pi 4** running flask on the backend. The app allows users to get liquid level sensor data real-time and monitors reagent carboys with coloured LEDS. A pi-camera is installed which can stream data on an endpoint or save a video for a particular time-frame.
 
-#### Installing packages on raspberry p:
+#### Installing packages on raspberry pi:
 
 first create a virtual environment, `python3 -m venv env`. Then source the
 virtual environment with, `source /env/bin/activate`. Then install all packages
