@@ -48,6 +48,7 @@ send_cmd_dict = {
     'closedoor_dryer' : [FC(TP, DR, 'CD').run_cmds, FC.to_secs(0.05)],
     'start_dryer' : [FC(TP, DR, 'SD').run_cmds, FC.to_secs(0.07)],
     'custom2_proc' : [FC(TP, WA, 'S2').run_cmds, FC.to_secs(0.07)],
+    'custom1_proc' : [FC(TP, WA, 'S1').run_cmds, FC.to_secs(0.07)],
     'self_clean' : [FC(TP, WA, 'CL').run_cmds, FC.to_secs(0.05)],
     'check_sensor' : [FC(TP, WA, 'SC').run_cmds, FC.to_secs(0.82)],
     'waste_drain' : [FC(TP, WA, 'WD').run_cmds, FC.to_secs(0.04)],
