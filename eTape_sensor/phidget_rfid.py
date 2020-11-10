@@ -14,7 +14,6 @@ db_keg_filepath = os.path.join(db_filepath, 'dmso_kegs.db')
 port_addr = '/dev/ttyUSB1' # scale port on rpi
 baudrate = 9600
 timeout = 10
-time_interval = 10
 
 
 def read_scale(port=port_addr):
